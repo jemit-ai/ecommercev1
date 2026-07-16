@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Models\Order;
+
+use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+
+class Order extends Model
+{
+     protected $fillable = [
+        'user_id',
+        'order_number',
+        'grand_total',
+        'payment_method',
+        'payment_id',
+        'order_status',
+    ];
+
+    /**
+     * Order belongs to a user.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Order has many order details.
+     * 
+     */
+    public function details()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
+    
+    public function timelines()
+    {
+        return $this->hasMany(OrderTimeline::class);
+    }
+    
+}

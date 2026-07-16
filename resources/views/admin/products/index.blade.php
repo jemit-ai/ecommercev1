@@ -10,12 +10,29 @@
             <h1 class="text-2xl font-black text-slate-800 tracking-tight">Products Catalog</h1>
             <p class="text-slate-400 text-xs mt-1">Configure inventory listings, category mappings, and pricing matrices.</p>
         </div>
-        <button class="inline-flex items-center px-4 py-2.5 text-xs font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-500 hover:shadow-indigo-500/20 hover:shadow-lg transition-all duration-300">
-            <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            Add New Product
-        </button>
+        
+        <div class="flex items-center gap-3">
+
+    <!-- Add Product -->
+    <a href=""
+       class="inline-flex items-center px-4 py-2.5 text-xs font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-500 hover:shadow-blue-500/20 hover:shadow-lg transition-all duration-300">
+        <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        Add New Product
+    </a>
+
+    <!-- Import Products -->
+    <a href="{{ route('admin.products.import')}}"
+       class="inline-flex items-center px-4 py-2.5 text-xs font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-500 hover:shadow-emerald-500/20 hover:shadow-lg transition-all duration-300">
+        <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12m0 0l-4-4m4 4l4-4" />
+        </svg>
+        Import Products
+    </a>
+
+</div>
+
     </div>
 
     <!-- Product Summary Metrics -->
@@ -111,7 +128,7 @@
                             </td>
                             <td class="py-4 px-6">
                                 <span class="px-2.5 py-1 rounded-lg text-xs bg-slate-100 text-slate-600 font-bold border border-slate-200">
-                                    {{ $product->category->name }}
+                                    {{ $product->category->name ?? 'Not Assigned' }}
                                 </span>
                             </td>
                             <td class="py-4 px-6 text-right font-black text-slate-900 text-sm">

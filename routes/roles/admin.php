@@ -34,6 +34,14 @@ Route::prefix('admin')->middleware(['auth','role:Admin|admin'])->group(function 
     
     Route::get('dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('products', [App\Http\Controllers\Admin\ProductController::class, 'index'])->name('admin.products.index');
+    // Import Form
+    Route::get('products/import', [App\Http\Controllers\Admin\ProductController::class, 'import'])
+        ->name('admin.products.import');
+
+    // Import CSV
+    Route::post('products/import', [App\Http\Controllers\Admin\ProductController::class, 'importStore'])
+        ->name('admin.products.import.store');
+
     Route::get('categories', [App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('admin.categories.index');
     Route::get('orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
     Route::get('sellers', [App\Http\Controllers\Admin\SellerController::class, 'index'])->name('admin.sellers.index');
