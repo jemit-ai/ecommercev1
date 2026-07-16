@@ -3,11 +3,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Order\OrderController;
 
 
-  
+    Route::post('/order', [OrderController::class, 'store']);   
 
     Route::middleware('auth:sanctum')->group(function () {
 
-        Route::post('/order', [OrderController::class, 'store']);      // Place order
+        //Route::post('/order', [OrderController::class, 'store']);      // Place order
 
         
     });
