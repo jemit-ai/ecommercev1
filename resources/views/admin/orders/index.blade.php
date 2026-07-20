@@ -55,11 +55,25 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="py-4 px-6 text-center">
+
+                            <td class="flex items-center justify-center gap-3">
+
+                                <a href=""
+                                class="text-sky-600 hover:text-sky-800 font-semibold">
+                                    View
+                                </a>
+
+                                <a href=""
+                                class="text-amber-600 hover:text-amber-800 font-semibold">
+                                    Edit
+                                </a>
+                                
+                            </td>
+                            <!--td class="py-4 px-6 text-center">
                                 <div class="flex items-center justify-center gap-3">
                                     <button class="text-indigo-600 hover:text-indigo-900 font-semibold text-xs">Update Status</button>
                                 </div>
-                            </td>
+                            </td-->
                         </tr>
                     @empty
                         <tr>
