@@ -6,6 +6,7 @@ use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\ProfileController;
+use App\Http\Controllers\Frontend\ProductController;
 use Inertia\Inertia;
 
 
@@ -25,6 +26,24 @@ Route::controller(HomeController::class)->group(function () {
 
 });
 
+
+Route::controller(ProductController::class)->group(function () {
+
+    Route::get('/product_detail','productDetail')->name('product.detail'); 
+
+    Route::get('/products','products')->name('products.index'); 
+
+});
+
+
+Route::controller(OrderController::class)->group(function () {
+
+    Route::get('/checkout','CheckOut')->name('order.index');  
+
+});
+
+
+
 Route::prefix('cart')->controller(CartController::class)->group(function () {
 
     Route::get('/', 'index')->name('cart.index');
@@ -38,6 +57,8 @@ Route::prefix('cart')->controller(CartController::class)->group(function () {
     Route::delete('/clear', 'clear')->name('cart.clear');
 
 });
+
+/*
 
 Route::middleware(['auth','role:Customer'])->prefix('wishlist')
     ->controller(WishlistController::class)
@@ -79,4 +100,6 @@ Route::middleware(['auth','verified','role:Customer'])
             ->only(['index','update']);
 
 });
+
+*/
 
