@@ -2,18 +2,37 @@
 import Header from './Components/Header.vue';
 import Footer from './Components/Footer.vue';
 import ProductCard from './Components/ProductCard.vue';
+import { router } from '@inertiajs/vue3';
+import { reactive } from 'vue';
+
 
 const categories = ['Electronics', 'Fashion', 'Shoes', 'Furniture', 'Sports'];
 const brands = ['Apple', 'Samsung', 'Sony', 'Nike', 'Adidas'];
 
-const products = [
-    { id: 1, name: 'Wireless Headphone', price: '120', original_price: '150', image: 'https://picsum.photos/400/300?1' },
-    { id: 2, name: 'Smart Watch', price: '180', image: 'https://picsum.photos/400/300?2' },
-    { id: 3, name: 'Bluetooth Speaker', price: '95', image: 'https://picsum.photos/400/300?3' },
-    { id: 4, name: 'Gaming Mouse', price: '65', image: 'https://picsum.photos/400/300?4' },
-    { id: 5, name: 'Laptop Backpack', price: '55', image: 'https://picsum.photos/400/300?5' },
-    { id: 6, name: 'Running Shoes', price: '140', image: 'https://picsum.photos/400/300?6' },
-];
+const form = reactive({
+    name: '',
+    category: '',
+    brand: '',
+    price: '',
+});
+
+defineProps({
+    products: Array,
+});
+
+const applyFilters = () => {
+
+    console.log(form); // Entire form object
+
+    //console.log('Here i am' + searchText.value);
+
+    router.get('/products', form, {
+        preserveState: true,
+        preserveScroll: true
+    });
+
+}
+
 </script>
 
 <template>
@@ -38,43 +57,48 @@ const products = [
             <section class="catalog-section">
                 <div class="container">
                     <div class="row g-4">
+
                         <aside class="col-lg-3">
-                            <div class="filter-card">
-                                <div class="filter-header">
-                                    <h3>Filters</h3>
-                                    <button type="button" class="ghost-btn">Reset</button>
-                                </div>
-
-                                <div class="filter-group">
-                                    <label class="filter-label" for="search">Search</label>
-                                    <input id="search" type="text" class="form-control" placeholder="Search products">
-                                </div>
-
-                                <div class="filter-group">
-                                    <h4>Categories</h4>
-                                    <ul class="category-list">
-                                        <li v-for="category in categories" :key="category">
-                                            <a href="#">{{ category }}</a>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <div class="filter-group">
-                                    <h4>Price</h4>
-                                    <input type="range" class="form-range">
-                                    <p class="price-range">$20 - $500</p>
-                                </div>
-
-                                <div class="filter-group">
-                                    <h4>Brands</h4>
-                                    <div v-for="brand in brands" :key="brand" class="form-check">
-                                        <input class="form-check-input" type="checkbox">
-                                        <label class="form-check-label">{{ brand }}</label>
+                            <form @submit.prevent="applyFilters" method="GET">
+                                <div class="filter-card">
+                                    <div class="filter-header">
+                                        <h3>Filters</h3>
+                                        <button type="button" class="ghost-btn">Reset</button>
                                     </div>
-                                </div>
 
-                                <button class="btn btn-primary w-100 mt-3">Apply Filters</button>
-                            </div>
+                                    <div class="filter-group">
+                                        <label class="filter-label" for="search">Search</label>
+                                        <input id="search" type="text" class="form-control"
+                                            placeholder="Search products" v-model="form.name">
+                                    </div>
+
+                                    <div class="filter-group">
+                                        <h4>Categories</h4>
+                                        <ul class="category-list">
+                                            <li v-for="category in categories" :key="category">
+                                                <a href="#">{{ category }}</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="filter-group">
+                                        <h4>Price</h4>
+                                        <input type="range" class="form-range">
+                                        <p class="price-range">$20 - $500</p>
+                                    </div>
+
+                                    <div class="filter-group">
+                                        <h4>Brands</h4>
+                                        <div v-for="brand in brands" :key="brand" class="form-check">
+                                            <input class="form-check-input" type="checkbox">
+                                            <label class="form-check-label">{{ brand }}</label>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn btn-primary w-100 mt-3" @click="applyFilters">Apply
+                                        Filters</button>
+                                </div>
+                            </form>
                         </aside>
 
                         <div class="col-lg-9">
@@ -92,12 +116,8 @@ const products = [
                             </div>
 
                             <div class="row g-4">
-                                <ProductCard
-                                    v-for="product in products"
-                                    :key="product.id"
-                                    :product="product"
-                                    class="col-md-6 col-xl-4"
-                                />
+                                <ProductCard v-for="product in products" :key="product.id" :product="product"
+                                    class="col-md-6 col-xl-4" />
                             </div>
 
                             <nav class="pagination-wrap">
@@ -110,6 +130,7 @@ const products = [
                                 </ul>
                             </nav>
                         </div>
+
                     </div>
                 </div>
             </section>
@@ -223,7 +244,7 @@ const products = [
     margin: 0;
 }
 
-.category-list li + li {
+.category-list li+li {
     margin-top: 0.45rem;
 }
 

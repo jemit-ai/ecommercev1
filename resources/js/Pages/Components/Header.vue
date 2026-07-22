@@ -1,9 +1,10 @@
 <template>
     <nav class="navbar navbar-expand-lg" id="nav">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="./assets/images/logo/logo.png" alt="ShopGrids" width="150px">
-            </a>
+
+            <Link class="navbar-brand">
+                <img src="./images/logo/logo.png" alt="ShopGrids" width="150" />
+            </Link>
 
             <div class="d-flex align-items-center gap-2">
                 <div class="search-box d-none d-lg-flex">
@@ -25,10 +26,10 @@
                         <a class="nav-link active" aria-current="page" href="#home">Home</a>
                     </li>
                     <li class="nav-item mx-3">
-                        <a class="nav-link" href="#latest">New</a>
+                        <a class="nav-link" href="/products">Products</a>
                     </li>
                     <li class="nav-item mx-3">
-                        <a class="nav-link" href="#sellers">Store</a>
+                        <a class="nav-link" href="/checkout">Checkout</a>
                     </li>
                     <li class="nav-item mx-3">
                         <a class="nav-link" href="#footer">Contacts</a>
@@ -37,18 +38,41 @@
             </div>
 
             <div class="d-none d-lg-flex align-items-center gap-2">
-                <a href="#" class="nav-icon icon-pill" aria-label="Wishlist">
+                <!--a href="#" class="nav-icon icon-pill" aria-label="Wishlist">
                     <ion-icon name="heart-outline"></ion-icon>
                 </a>
                 <a href="#" class="nav-icon icon-pill" aria-label="Cart">
                     <ion-icon name="bag-outline"></ion-icon>
-                </a>
-                <a href="#" class="nav-action-btn">Login</a>
-                <a href="#" class="nav-action-btn primary">Register</a>
+                </a-->
+
+                <!--a :href="route('cart.index')" class="d-flex align-items-center gap-2 text-decoration-none text-dark">
+                    <ion-icon name="cart-outline" style="font-size:24px;"></ion-icon>
+                    <span>Cart</span>
+                </a-->
+
+                <!--a href="#" class="nav-action-btn">Login</a>
+                <a href="#" class="nav-action-btn primary">Register</a-->
+
             </div>
         </div>
     </nav>
 </template>
+
+<script setup>
+import { Link, usePage } from '@inertiajs/vue3'
+import { computed } from 'vue'
+import { route } from 'ziggy-js'
+
+const page = usePage()
+
+//console.log("Header Props:", JSON.stringify(page.props));
+
+const cartCount = computed(() => page.props.cartCount ?? 0)
+
+//console.log("Count: " + cartCount.value);
+
+</script>
+
 
 <style scoped>
 #nav {
@@ -116,7 +140,9 @@
     background: #4f46e5;
     color: #fff;
 }
+
 .icon-pill {
     border: 1px solid #e5e7eb;
     box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
-}</style>
+}
+</style>

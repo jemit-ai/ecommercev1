@@ -4,23 +4,23 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\Product\ProductServices;
+use App\Services\Product\ProductService;
 use Inertia\Inertia;
 
 class HomeController extends Controller
 {
     //
 
-    protected $productServices;
+    protected $productService;
 
-    public function __construct(ProductServices $productServices)
+    public function __construct(ProductService $productService)
     {
-        $this->productServices = $productServices;
+        $this->productService = $productService;
     }
 
     public function index()
     {
-        $latestProducts = $this->productServices->getLatestProducts();
+        $latestProducts = $this->productService->getLatestProducts();
 
         return Inertia::render('Home', [
             'latestProducts' => $latestProducts,

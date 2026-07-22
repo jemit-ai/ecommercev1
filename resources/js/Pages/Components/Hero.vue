@@ -28,10 +28,10 @@
                             </ol>
                             <div class="carousel-inner">
                                 <div class="carousel-item active">
-                                    <img src="./assets/images/products/Home_2.png" class="d-block w-100" alt="Seasonal jacket collection">
+                                    <img src="./images/products/Home_2.png" class="d-block w-100" alt="Seasonal jacket collection">
                                 </div>
                                 <div class="carousel-item">
-                                    <img src="./assets/images/products/Home_1.png" class="d-block w-100" alt="Premium outerwear showcase">
+                                    <img src="./images/products/Home_1.png" class="d-block w-100" alt="Premium outerwear showcase">
                                 </div>
                             </div>
                             <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">

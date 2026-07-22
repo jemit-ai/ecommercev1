@@ -26,7 +26,7 @@
         <div class="container py-5">
             <div class="row gy-4">
                 <div class="col-12 col-md-3 text-center text-md-start">
-                    <img src="./assets/images/logo/white-logo.png" width="160px" alt="ShopGrids" />
+                    <img src="./images/logo/white-logo.png" width="160px" alt="ShopGrids" />
                 </div>
                 <div class="col-12 col-md-3 text-center text-md-start">
                     <h3>Help & info</h3>

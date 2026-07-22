@@ -1,9 +1,13 @@
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { defineCustomElements } from 'ionicons/loader' 
+import { defineCustomElements } from 'ionicons/loader';
+//import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/index.esm.js';
 
-import '../css/main.css'; 
+import { ZiggyVue  } from 'ziggy-js'
+
+
+import '../css/main.css';
 
 // app.js
 import 'bootstrap/dist/css/bootstrap.min.css';          // Bootstrap CSS
@@ -30,6 +34,7 @@ createInertiaApp({
             render: () => h(App, props),
         })
             .use(plugin)
+            .use(ZiggyVue)
             .mount(el);
     },
 });

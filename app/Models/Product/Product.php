@@ -24,4 +24,16 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function getPrice(){ 
+
+        if ($this->discount_price && $this->discount_price < $this->price) {
+            return $this->discount_price;
+        }
+        return $this->price;
+
+    }
+
+    
+    
 }

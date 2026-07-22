@@ -5,14 +5,36 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Services\Product\ProductService;
+use App\DTO\ProductFilterData;
 
 class ProductController extends Controller
 {
     //
-     
-    public function products(){
+    
+    protected $productService;
+    
+    public function __construct(ProductService $productService){
 
-        return Inertia::render('Product');
+        $this->productService = $productService;
+
+    }
+    
+     
+    public function products(Request $request){
+        
+        \Log::info('ReqAll:', $request->all());
+
+        $ProductFilterData = ProductFilterData::fromRequest($request); 
+
+        \Log::info('ProductFilterData:'. json_encode($ProductFilterData)); 
+
+        $allProducts = $this->productService->getAllProducts($ProductFilterData);
+        
+        return Inertia::render('Product', [
+            'products' => $allProducts,
+        ]);
+    
 
     } 
     
@@ -26,8 +48,6 @@ class ProductController extends Controller
 
         $productID = $request->productID;
          
-        
-
     } 
 
 }

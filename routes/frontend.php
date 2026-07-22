@@ -8,7 +8,7 @@ use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\ProductController;
 use Inertia\Inertia;
-
+use App\Http\Middleware\HandleInertiaRequests;
 
 Route::controller(HomeController::class)->group(function () {
 
@@ -26,7 +26,6 @@ Route::controller(HomeController::class)->group(function () {
 
 });
 
-
 Route::controller(ProductController::class)->group(function () {
 
     Route::get('/product_detail','productDetail')->name('product.detail'); 
@@ -37,16 +36,13 @@ Route::controller(ProductController::class)->group(function () {
       
 });
 
-
 Route::controller(OrderController::class)->group(function () {
 
     Route::get('/checkout','CheckOut')->name('order.index');  
 
 });
 
-
-
-Route::prefix('cart')->controller(CartController::class)->group(function () {
+Route::middleware(['web'])->prefix('cart')->controller(CartController::class)->group(function () {
 
     Route::get('/', 'index')->name('cart.index');
 

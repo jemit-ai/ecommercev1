@@ -1,9 +1,9 @@
 <script setup>
 const products = [
-    { id: 1, name: 'Cloudline Coat', price: '$129', image: './assets/images/products/Sellers_1.png' },
-    { id: 2, name: 'Monarch Jacket', price: '$149', image: './assets/images/products/Sellers_2.png' },
-    { id: 3, name: 'Harbor Knit', price: '$98', image: './assets/images/products/Sellers_3.png' },
-    { id: 4, name: 'Lumen Hoodie', price: '$89', image: './assets/images/products/Sellers_4.png' },
+    { id: 1, name: 'Cloudline Coat', price: '$129', image: './images/products/Sellers_1.png' },
+    { id: 2, name: 'Monarch Jacket', price: '$149', image: './images/products/Sellers_2.png' },
+    { id: 3, name: 'Harbor Knit', price: '$98', image: './images/products/Sellers_3.png' },
+    { id: 4, name: 'Lumen Hoodie', price: '$89', image: './images/products/Sellers_4.png' },
 ];
 </script>
 

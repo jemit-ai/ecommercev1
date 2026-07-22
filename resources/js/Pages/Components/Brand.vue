@@ -2,12 +2,12 @@
     <section class="brands">
         <div class="container">
             <div class="brand-strip">
-                <div class="brand-pill"><img src="./assets/images/brands/gucci.png" alt="Gucci" /></div>
-                <div class="brand-pill"><img src="./assets/images/brands/H&M.png" alt="H&M" /></div>
-                <div class="brand-pill"><img src="./assets/images/brands/nike.png" alt="Nike" /></div>
-                <div class="brand-pill"><img src="./assets/images/brands/the.png" alt="The Row" /></div>
-                <div class="brand-pill"><img src="./assets/images/brands/prada.png" alt="Prada" /></div>
-                <div class="brand-pill"><img src="./assets/images/brands/ellesse.png" alt="Ellesse" /></div>
+                <div class="brand-pill"><img src="./images/brands/gucci.png" alt="Gucci" /></div>
+                <div class="brand-pill"><img src="./images/brands/H&M.png" alt="H&M" /></div>
+                <div class="brand-pill"><img src="./images/brands/nike.png" alt="Nike" /></div>
+                <div class="brand-pill"><img src="./images/brands/the.png" alt="The Row" /></div>
+                <div class="brand-pill"><img src="./images/brands/prada.png" alt="Prada" /></div>
+                <div class="brand-pill"><img src="./images/brands/ellesse.png" alt="Ellesse" /></div>
             </div>
         </div>
     </section>

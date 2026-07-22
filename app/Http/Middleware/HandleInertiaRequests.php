@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Services\Cart\CartService;
+use App\DTO\CartData;
+
 
 class HandleInertiaRequests extends Middleware
 {
@@ -35,8 +38,16 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+
+        $cartData = CartData::fromRequest($request);   
+        
+        $cartCount = app(CartService::class)->getCartCount($cartData);  
+
+        \Log::info("CartCount::->" . $cartCount);  
+
         return [
             ...parent::share($request),
+            'cartCount' => $cartCount, 
             //
         ];
     }

@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\CartService;
+use App\Services\Cart\CartService;
 use App\DTO\CartData;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
+use App\Exceptions\Cart\CartException; 
 
 class CartController extends Controller
 {
@@ -23,17 +24,28 @@ class CartController extends Controller
 
     }
     
-    public function store(Request $request){
+    public function store(Request $request){   
 
-        $cartData = CartData::fromRequest($request);  
-
+        \Log::info("Cart Store Request Data::->" . json_encode($request));  
+    
+        $cartData = CartData::fromRequest($request);   
+        
+        \Log::info("Cart Data::->" . json_encode($cartData)); 
+        
         try{
 
-            $this->cartService->addToCart($cartData); 
+            $cart = $this->cartService->addToCart($cartData);  
+                
+            \Log::info("Cart Store:->" . json_encode($cart));  
+
+            //return Inertia::render('Home'); 
+
+            return back()->with('success', 'Product added to cart.');
 
         }catch(CartException $e){
-            
-            \Log::info($e->getMessage());
+
+            \Log::info("Cart Store Error:->" . $e->getMessage());
+
         }               
 
     }

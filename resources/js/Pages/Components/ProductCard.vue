@@ -4,8 +4,8 @@
         <div class="product-content">
             <h3>{{ product.name || 'Premium product' }}</h3>
             <p>{{ product.price ? `${product.price}` : 'From $99' }}</p>
-            <button class="btn-cart" type="button" @click="handleClick(product.id)">
-                Add to Cart
+            <button class="btn-cart" type="button" @click="handleClick(product)" :disabled="loading">
+                {{ loading ? 'Adding...' : 'Add to Cart' }}
             </button>
         </div>
     </div>
@@ -13,6 +13,7 @@
 
 <script setup>
 import { router } from '@inertiajs/vue3';
+
 defineProps({
     product: {
         type: Object,
@@ -20,26 +21,27 @@ defineProps({
     },
 });
 
-const handleClick = (productID) => {
+const handleClick = (product) => {
 
-    //alert('Product clicked' + productID);
+    console.log(product);
+    // alert('Product clicked' + productID);
     // using inertia 
 
     try {
 
-        router.post('/product', { productID }, {
+        router.post('/cart/add', { product_id: product.id, quantity: 1 }, {
 
             onStart: () => {
-                console.log('Product clicked' + productID);
+                console.log('Product clicked' + product);
             },
             onFinish: () => {
-                console.log('Product clicked' + productID);
+                console.log('Product clicked' + product);
             },
             onSuccess: () => {
-                console.log('Product clicked' + productID);
+                console.log('Product clicked' + product);
             },
             onError: () => {
-                console.log('Product clicked' + productID);
+                console.log('Product clicked' + product);
             },
 
         });

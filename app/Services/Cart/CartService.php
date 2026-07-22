@@ -1,14 +1,17 @@
 <?php
 namespace App\Services\Cart;
 
-use App\Models\Product;
+//use App\Models\Product;
 use App\Models\Cart\Cart;
 use App\Models\Cart\CartItems;
+use App\Models\Product\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\DTO\CartData;
 use Exception;
+use Log;
+use App\Exceptions\CartException;
 
 class CartService{ 
  
@@ -44,7 +47,13 @@ class CartService{
         $userID = $cartData->userID;
         $sessionID = $cartData->sessionID;
 
-        $cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
+        if ($userID) {
+                $cart = Cart::where('user_id', $userID)->first();
+        } else {
+                $cart = Cart::where('session_id', $sessionID)->first();
+        }
+
+        //$cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
         
         if($cart){
             $cartItem = CartItems::where('cart_id', $cart->id)->first();
@@ -71,36 +80,63 @@ class CartService{
     
     try{
 
-        $userID = $cartData->userID;
-        $sessionID = $cartData->sessionID;
-        $productID = $cartData->productID;
-        $quantity = $cartData->quantity;
+        DB::transaction(function () use ($cartData) {
 
-        $cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
-        
-        if($cart){
-            $cartItem = CartItems::where('cart_id', $cart->id)->where('product_id', $productID)->first();
-            if($cartItem){
-                $cartItem->quantity += $quantity;
-                $cartItem->save();
-            }else{
-                $cartItem = new CartItems();
-                $cartItem->cart_id = $cart->id;
-                $cartItem->product_id = $productID;
-                $cartItem->quantity = $quantity;
-                $cartItem->save();
+            $userID    = $cartData->userID;
+            $sessionID = $cartData->sessionID;
+            $productID = $cartData->productID;
+            $quantity  = $cartData->quantity; 
+
+            if ($userID) {
+                $cart = Cart::where('user_id', $userID)->first();
+            } else {
+                $cart = Cart::where('session_id', $sessionID)->first();
             }
-        }else{
-            $cart = new Cart();
-            $cart->user_id = $userID;
-            $cart->session_id = $sessionID;
-            $cart->save();
-            $cartItem = new CartItems();
-            $cartItem->cart_id = $cart->id;
-            $cartItem->product_id = $productID;
-            $cartItem->quantity = $quantity;
-            $cartItem->save();
-        }
+
+            //$cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
+            
+            if($cart){
+
+                $cartItem = CartItems::where('cart_id', $cart->id)->where('product_id', $productID)->first();
+                if($cartItem){
+                    $cartItem->quantity += $quantity;
+                    $cartItem->save();
+                }else{
+
+                    if($productID){
+                       $product = Product::findOrFail($productID);
+                    }
+
+                    CartItems::create([
+                        'cart_id'    => $cart->id,
+                        'product_id' => $productID,
+                        'quantity'   => $quantity,
+                        'price' => $product->getPrice()
+                    ]);
+
+                }
+
+            }else{
+
+                $cart = Cart::firstOrCreate([
+                    'user_id' => $userID,
+                    'session_id' => $sessionID,
+                ]);
+
+                if($productID){
+                    $product = Product::findOrFail($productID);
+                }
+
+                CartItems::create([
+                    'cart_id'    => $cart->id,
+                    'product_id' => $productID,
+                    'quantity'   => $quantity,
+                    'price' => $product->getPrice()
+                ]);
+
+            }
+
+        });
 
         return true;
 
@@ -115,36 +151,66 @@ class CartService{
     
     try{
 
-        $userID = $cartData->userID;
-        $sessionID = $cartData->sessionID;
-        $productID = $cartData->productID;
-        $quantity = $cartData->quantity;
+        DB::transaction(function () use ($cartData) {
 
-        $cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
-        
-        if($cart){
-            $cartItem = CartItems::where('cart_id', $cart->id)->where('product_id', $productID)->first();
-            if($cartItem){
-                $cartItem->quantity += $quantity;
-                $cartItem->save();
-            }else{
-                $cartItem = new CartItems();
-                $cartItem->cart_id = $cart->id;
-                $cartItem->product_id = $productID;
-                $cartItem->quantity = $quantity;
-                $cartItem->save();
+            $userID = $cartData->userID;
+            $sessionID = $cartData->sessionID;
+            $productID = $cartData->productID;
+            $quantity = $cartData->quantity;
+
+            if ($userID) {
+                $cart = Cart::where('user_id', $userID)->first();
+            } else {
+                $cart = Cart::where('session_id', $sessionID)->first();
             }
-        }else{
-            $cart = new Cart();
-            $cart->user_id = $userID;
-            $cart->session_id = $sessionID;
-            $cart->save();
-            $cartItem = new CartItems();
-            $cartItem->cart_id = $cart->id;
-            $cartItem->product_id = $productID;
-            $cartItem->quantity = $quantity;
-            $cartItem->save();
-        }
+
+            //$cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
+            
+            if($cart){
+                $cartItem = CartItems::where('cart_id', $cart->id)->where('product_id', $productID)->first();
+               
+                if($cartItem){
+
+                    $cartItem->quantity += $quantity;
+                    $cartItem->save();
+
+                }else{
+                    
+
+                    if($productID){
+                       $product = Product::findOrFail($productID);
+                    }
+
+                    CartItems::create([
+                        'cart_id'    => $cart->id,
+                        'product_id' => $productID,
+                        'quantity'   => $quantity,
+                        'price' => $product->getPrice()
+                    ]);
+
+                }
+
+            }else{
+
+                $cart = Cart::firstOrCreate([
+                    'user_id' => $userID,
+                    'session_id' => $sessionID,
+                ]);
+
+
+                if($productID){
+                    $product = Product::findOrFail($productID);
+                }
+
+                CartItems::create([
+                    'cart_id'    => $cart->id,
+                    'product_id' => $productID,
+                    'quantity'   => $quantity,
+                    'price' => $product->getPrice()
+                ]);
+            }
+
+        });
 
         return true;
         
@@ -165,41 +231,45 @@ class CartService{
 
         try {
 
-            $userID = $cartData->userID;
-            $sessionID = $cartData->sessionID;
-            $productID = $cartData->productID;
+            DB::transaction(function () use ($cartData) {
 
-            // Find the cart
-            $query = Cart::query();
+                $userID = $cartData->userID;
+                $sessionID = $cartData->sessionID;
+                $productID = $cartData->productID;
 
-            if ($userID) {
-                $query->where('user_id', $userID);
-            } else {
-                $query->where('session_id', $sessionID);
-            }
+                // Find the cart
+                $query = Cart::query();
 
-            $cart = $query->first();
+                if ($userID) {
+                    $query->where('user_id', $userID);
+                } else {
+                    $query->where('session_id', $sessionID);
+                }
 
-            if (!$cart) {
-                return false;
-            }
+                $cart = $query->first();
 
-            // Find the cart item
-            $cartItem = CartItems::where('cart_id', $cart->id)
-                ->where('product_id', $productID)
-                ->first();
+                if (!$cart) {
+                    return false;
+                }
 
-            if (!$cartItem) {
-                return false;
-            }
+                // Find the cart item
+                $cartItem = CartItems::where('cart_id', $cart->id)
+                    ->where('product_id', $productID)
+                    ->first();
 
-            // Delete the item
-            $cartItem->delete();
+                if (!$cartItem) {
+                    return false;
+                }
 
-            // Delete the cart if it has no items left
-            if (!CartItems::where('cart_id', $cart->id)->exists()) {
-                $cart->delete();
-            }
+                // Delete the item
+                $cartItem->delete();
+
+                // Delete the cart if it has no items left
+                if (!CartItems::where('cart_id', $cart->id)->exists()) {
+                    $cart->delete();
+                }
+
+            });
 
             return true;
 
@@ -218,17 +288,28 @@ class CartService{
     
     try{ 
 
-        $userID = $cartData->userID;
-        $sessionID = $cartData->sessionID;
+        DB::transaction(function () use ($cartData) {
 
-        $cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
-        
-        if($cart){
-            $cartItem = CartItems::where('cart_id', $cart->id)->first();
-            if($cartItem){
-                $cartItem->delete();
-            }
-        }
+                $userID = $cartData->userID;
+                $sessionID = $cartData->sessionID;
+
+                if ($userID) {
+                    $cart = Cart::where('user_id', $userID)->first();
+                } else {
+                    $cart = Cart::where('session_id', $sessionID)->first();
+                }
+
+
+                //$cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
+                
+                if($cart){
+                    $cartItem = CartItems::where('cart_id', $cart->id)->first();
+                    if($cartItem){
+                        $cartItem->delete();
+                    }
+                }
+ 
+        });
 
         return true;
 
@@ -245,4 +326,40 @@ class CartService{
     
   }
 
+  public function getCartCount(CartData $cartData){
+    
+    try{ 
+        
+        $userID = $cartData->userID;
+        $sessionID = $cartData->sessionID;
+
+        if ($userID) {
+            $cart = Cart::where('user_id', $userID)->first();
+        } else {
+            $cart = Cart::where('session_id', $sessionID)->first();
+        }
+
+        //$cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
+        
+        if($cart){
+            $cartItem = CartItems::where('cart_id', $cart->id)->first();
+            if($cartItem){
+                return $cartItem->count();
+            }
+        }
+
+        return 0;
+
+    }catch(Exception $e){
+
+        \Log::error('CartService', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+        
+        return 0;
+      
+    }
+    
+  }
 }
