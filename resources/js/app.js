@@ -1,7 +1,7 @@
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { defineCustomElements } from 'ionicons/loader'
+import { defineCustomElements } from 'ionicons/loader' 
 
 import '../css/main.css'; 
 
@@ -15,6 +15,7 @@ import $ from 'jquery';                               // jQuery (if you need it)
 // Expose jQuery globally for any legacy scripts that expect $ or jQuery
 window.$ = window.jQuery = $;
 
+defineCustomElements(window);
 
 
 createInertiaApp({

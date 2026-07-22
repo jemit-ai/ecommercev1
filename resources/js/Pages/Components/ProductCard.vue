@@ -3,8 +3,8 @@
         <div class="product-badge">Popular</div>
         <div class="product-content">
             <h3>{{ product.name || 'Premium product' }}</h3>
-            <p>{{ product.price ? `$${product.price}` : 'From $99' }}</p>
-            <button class="btn-cart" type="button">
+            <p>{{ product.price ? `${product.price}` : 'From $99' }}</p>
+            <button class="btn-cart" type="button" @click="handleClick(product.id)">
                 Add to Cart
             </button>
         </div>
@@ -12,12 +12,48 @@
 </template>
 
 <script setup>
+import { router } from '@inertiajs/vue3';
 defineProps({
     product: {
         type: Object,
         required: true,
     },
 });
+
+const handleClick = (productID) => {
+
+    //alert('Product clicked' + productID);
+    // using inertia 
+
+    try {
+
+        router.post('/product', { productID }, {
+
+            onStart: () => {
+                console.log('Product clicked' + productID);
+            },
+            onFinish: () => {
+                console.log('Product clicked' + productID);
+            },
+            onSuccess: () => {
+                console.log('Product clicked' + productID);
+            },
+            onError: () => {
+                console.log('Product clicked' + productID);
+            },
+
+        });
+
+    } catch (error) {
+
+        console.error('Unexpected error:', error);
+        alert('Something went wrong.');
+
+    }
+
+
+}
+
 </script>
 
 <style scoped>

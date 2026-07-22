@@ -31,8 +31,10 @@ Route::controller(ProductController::class)->group(function () {
 
     Route::get('/product_detail','productDetail')->name('product.detail'); 
 
-    Route::get('/products','products')->name('products.index'); 
+    Route::get('/products','products')->name('product.list');      
 
+    Route::post('/product','productToCart')->name('product.toCart');  
+      
 });
 
 

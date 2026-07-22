@@ -14,13 +14,20 @@ class ProductController extends Controller
 
         return Inertia::render('Product');
 
-    }
+    } 
     
-    public function productDetail()
-    {
+    public function productDetail(){
 
         return Inertia::render('ProductDetail');
 
     }
+
+    public function productToCart(Request $request){ 
+
+        $productID = $request->productID;
+         
+        
+
+    } 
 
 }
