@@ -32,7 +32,7 @@ class ProductFilterData{
             search: $request->name,
             category: $request->category,
             brand: (int) $request->brand,
-            price: (int) $request->price, 
+            price: (float) $request->price, 
         );
     }
 

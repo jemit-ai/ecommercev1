@@ -21,8 +21,22 @@
             </div>
 
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+
                 <ul class="navbar-nav">
+
                     <li class="nav-item mx-3">
+                        <Link class="nav-link" href="/">Home</Link>
+                    </li>
+
+                    <li class="nav-item mx-3">
+                        <Link class="nav-link" href="/products">Products</Link>
+                    </li>
+
+                    <li class="nav-item mx-3">
+                        <Link class="nav-link" href="/checkout">Checkout</Link>
+                    </li>
+
+                    <!--li class="nav-item mx-3">
                         <a class="nav-link active" aria-current="page" href="#home">Home</a>
                     </li>
                     <li class="nav-item mx-3">
@@ -33,11 +47,14 @@
                     </li>
                     <li class="nav-item mx-3">
                         <a class="nav-link" href="#footer">Contacts</a>
-                    </li>
+                    </li-->
+
                 </ul>
+
             </div>
 
             <div class="d-none d-lg-flex align-items-center gap-2">
+
                 <!--a href="#" class="nav-icon icon-pill" aria-label="Wishlist">
                     <ion-icon name="heart-outline"></ion-icon>
                 </a>

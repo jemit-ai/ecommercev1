@@ -21,19 +21,20 @@ defineProps({
             <section class="latest-section" id="latest">
                 <div class="container">
                     <div class="section-heading">
+
                         <div>
                             <p class="eyebrow">Fresh arrivals</p>
                             <h2>Latest Products</h2>
                         </div>
-                        <a href="#" class="view-all">View All</a>
+
+                        <!--a href="/" class="view-all">View All</a-->
+
+                        <link href="/products" class="view-all">View All</link>
+
                     </div>
                     <div class="row g-4">
-                        <ProductCard
-                            v-for="product in latestProducts"
-                            :key="product.id"
-                            :product="product"
-                            class="col-12 col-sm-6 col-md-4 col-lg-3"
-                        />
+                        <ProductCard v-for="product in latestProducts" :key="product.id" :product="product"
+                            class="col-12 col-sm-6 col-md-4 col-lg-3" />
                     </div>
                 </div>
             </section>

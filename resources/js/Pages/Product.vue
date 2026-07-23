@@ -2,31 +2,41 @@
 import Header from './Components/Header.vue';
 import Footer from './Components/Footer.vue';
 import ProductCard from './Components/ProductCard.vue';
+import PriceSlider from './Components/PriceSlider.vue';
 import { router } from '@inertiajs/vue3';
 import { reactive } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import { ref } from 'vue'
 
 
 const categories = ['Electronics', 'Fashion', 'Shoes', 'Furniture', 'Sports'];
 const brands = ['Apple', 'Samsung', 'Sony', 'Nike', 'Adidas'];
 
-const form = reactive({
+const props = defineProps({
+    products: Array,
+    minPrice: Number,
+    maxPrice: Number,
+});
+
+const selectedPrice = ref(props.minPrice);
+
+const form = useForm({
     name: '',
     category: '',
     brand: '',
     price: '',
 });
 
-defineProps({
-    products: Array,
-});
-
 const applyFilters = () => {
 
-    console.log(form); // Entire form object
+    console.log(form.price);
 
-    //console.log('Here i am' + searchText.value);
+    // Update price field with selectedPrice
+    form.price = selectedPrice.value;
 
-    router.get('/products', form, {
+    //console.log("Form:-" + form.name);
+
+    form.get('/products', {
         preserveState: true,
         preserveScroll: true
     });
@@ -61,6 +71,7 @@ const applyFilters = () => {
                         <aside class="col-lg-3">
                             <form @submit.prevent="applyFilters" method="GET">
                                 <div class="filter-card">
+
                                     <div class="filter-header">
                                         <h3>Filters</h3>
                                         <button type="button" class="ghost-btn">Reset</button>
@@ -81,11 +92,8 @@ const applyFilters = () => {
                                         </ul>
                                     </div>
 
-                                    <div class="filter-group">
-                                        <h4>Price</h4>
-                                        <input type="range" class="form-range">
-                                        <p class="price-range">$20 - $500</p>
-                                    </div>
+                                    <PriceSlider :minPrice="props.minPrice" :maxPrice="props.maxPrice"
+                                        v-model="selectedPrice" />
 
                                     <div class="filter-group">
                                         <h4>Brands</h4>
@@ -116,7 +124,7 @@ const applyFilters = () => {
                             </div>
 
                             <div class="row g-4">
-                                <ProductCard v-for="product in products" :key="product.id" :product="product"
+                                <ProductCard v-for="product in props.products" :key="product.id" :product="product"
                                     class="col-md-6 col-xl-4" />
                             </div>
 

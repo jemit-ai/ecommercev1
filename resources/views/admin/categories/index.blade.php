@@ -42,7 +42,6 @@
                                 {{ $category->description ?? 'No description provided.' }}
                             </td>
                             <td class="py-4 px-6 text-center font-bold text-indigo-600">
-                                {{ $category->products_count }}
                             </td>
                             <td class="py-4 px-6 text-center">
                                 <div class="flex items-center justify-center gap-3">

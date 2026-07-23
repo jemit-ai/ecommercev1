@@ -21,7 +21,7 @@ class ProductController extends Controller
     }
     
      
-    public function products(Request $request){
+    public function products(Request $request){ 
         
         \Log::info('ReqAll:', $request->all());
 
@@ -30,9 +30,16 @@ class ProductController extends Controller
         \Log::info('ProductFilterData:'. json_encode($ProductFilterData)); 
 
         $allProducts = $this->productService->getAllProducts($ProductFilterData);
+
+        $minPrice    = $this->productService->getMinPrice();
+
+        $maxPrice    = $this->productService->getMaxPrice();
+        
         
         return Inertia::render('Product', [
             'products' => $allProducts,
+            'minPrice' => $minPrice,
+            'maxPrice' => $maxPrice,
         ]);
     
 
