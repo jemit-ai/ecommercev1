@@ -21,9 +21,10 @@ class Brand extends Model
  
     // relatioships 
 
-    public function products(): HasMany
-    {
+    public function products(): HasMany{
+
         return $this->hasMany(Product::class);
+        
     }
     
         

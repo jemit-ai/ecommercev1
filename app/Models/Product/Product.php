@@ -20,7 +20,7 @@ class Product extends Model
         'price',
         'discount_price',
         'stock',
-    ];
+    ]; 
 
     public function category(): BelongsTo
     {
@@ -41,6 +41,4 @@ class Product extends Model
 
     }
 
-    
-    
 }
