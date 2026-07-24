@@ -46,6 +46,8 @@ class CartController extends Controller
 
             \Log::info("Cart Store Error:->" . $e->getMessage());
 
+            return back()->with('error', 'Product addition failed.');
+
         }               
 
     }
@@ -70,12 +72,36 @@ class CartController extends Controller
 
             \Log::info("Cart Remove Error:->" . $e->getMessage());
 
+            return back()->with('error', 'Product removal failed.');
+
         }
 
     }
      
     public function update(Request $request){
         
+        try{
+
+            \Log::info('Update...'); 
+
+            $cartData = CartData::fromRequest($request);  
+
+            \Log::info("Cart Update Data::->" . json_encode($cartData));   
+            
+            $product = $this->cartService->updateCart($cartData);
+
+            \Log::info("Cart Update:->" . json_encode($product));
+
+            return back()->with('success', 'Product updated successfully.'); 
+
+       }catch(CartException $e){
+
+            \Log::info("Cart Update Error:->" . $e->getMessage());
+            
+            return back()->with('error', 'Product update failed.');
+
+       }
+
     }
     
     public function clear(Request $request){

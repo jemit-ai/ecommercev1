@@ -164,10 +164,11 @@ class CartService{
 
         DB::transaction(function () use ($cartData) {
 
-            $userID = $cartData->userID;
+            $userID    = $cartData->userID;
             $sessionID = $cartData->sessionID;
             $productID = $cartData->productID;
-            $quantity = $cartData->quantity;
+            $quantity  = $cartData->quantity;
+            $type      = $cartData->type; 
 
             if ($userID) {
                 $cart = Cart::where('user_id', $userID)->first();
@@ -178,6 +179,7 @@ class CartService{
             //$cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
             
             if($cart){
+
                 $cartItem = CartItems::where('cart_id', $cart->id)->where('product_id', $productID)->first();
                
                 if($cartItem){

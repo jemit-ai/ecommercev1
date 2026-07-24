@@ -14,12 +14,15 @@ class CartData{
 
     public $quantity;
 
-    public function __construct($userID,$sessionID,$productID,$quantity) {
+    public $type;
+
+    public function __construct($userID,$sessionID,$productID,$quantity,$type) {
         
         $this->userID = $userID;
         $this->sessionID = $sessionID;
         $this->productID = $productID;
         $this->quantity = $quantity;
+        $this->type = $type;
 
     }
 
@@ -30,6 +33,7 @@ class CartData{
             sessionID: $request->session()->getId(),
             productID: (int) $request->product_id,
             quantity: (int) $request->quantity,
+            type: (string) $request->type, 
         );
     }
 

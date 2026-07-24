@@ -8,13 +8,13 @@
             <strong>{{ item.product.name }}</strong><br />
             <!--small>Qty : {{ item.quantity }}</small-->
 
-            <button class="btn btn-sm btn-outline-secondary">
+            <button class="btn btn-sm btn-outline-secondary" @click="changeQty(item, 'decr')">
                 <i class="bi bi-dash"></i>
             </button>
 
-            <span class="mx-3 fw-bold">1</span>
+            <span class="mx-3 fw-bold">{{ item.quantity }}</span>
 
-            <button class="btn btn-sm btn-outline-secondary">
+            <button class="btn btn-sm btn-outline-secondary" @click="changeQty(item, 'incr')">
                 <i class="bi bi-plus"></i>
             </button>
 
@@ -66,43 +66,62 @@ watch(
 
 const removeItem = (item) => {
 
-    /*if (!item?.id) {
-        return;
+    try {
+
+        router.post('/cart/remove', { product_id: item.product.id, quantity: item.quantity }, {
+            preserveScroll: false,
+            onStart: () => {
+                console.log('Product clicked' + item);
+            },
+            onFinish: () => {
+                console.log('Product clicked' + item);
+            },
+            onSuccess: () => {
+                console.log('Product clicked' + item);
+            },
+            onError: () => {
+                console.log('Product clicked' + item);
+            },
+
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
     }
-
-    const targetUrl = `/cart/remove/${item.id}`;
-
-    console.log("Target URL" + targetUrl);
-
-    router.delete(targetUrl, {
-        preserveScroll: true,
-        onSuccess: () => {
-            console.log('Item removed');
-        },
-        onError: (errors) => {
-            console.error('Failed to remove item', errors);
-        }
-    });*/
-
-
-    router.post('/cart/remove', { product_id: item.product.id, quantity: item.quantity }, {
-        preserveScroll: false,
-        onStart: () => {
-            console.log('Product clicked' + item);
-        },
-        onFinish: () => {
-            console.log('Product clicked' + item);
-        },
-        onSuccess: () => {
-            console.log('Product clicked' + item);
-        },
-        onError: () => {
-            console.log('Product clicked' + item);
-        },
-
-    });
 
 }
 
+
+const changeQty = (item, type) => {
+
+    try {
+
+        let quantity = (type == 'incr') ? 1 : -1;
+
+        router.post('/cart/update', { product_id: item.product.id, quantity: quantity, type: type }, {
+            preserveScroll: false,
+            onStart: () => {
+                console.log('Product clicked' + item);
+            },
+            onFinish: () => {
+                console.log('Product clicked' + item);
+            },
+            onSuccess: () => {
+                console.log('Product clicked' + item);
+            },
+            onError: () => {
+                console.log('Product clicked' + item);
+            },
+
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+    }
+}
 
 </script>

@@ -48,9 +48,11 @@ Route::middleware(['web'])->prefix('cart')->controller(CartController::class)->g
 
     Route::post('/add', 'store')->name('cart.store');
 
-    Route::patch('/update/{cart}', 'update')->name('cart.update');
+    //Route::patch('/update/{cart}', 'update')->name('cart.update');
 
     //Route::delete('/remove/{cart}', 'destroy')->name('cart.destroy');
+
+    Route::post('/update', 'update')->name('cart.update'); 
 
     Route::post('/remove', 'destroy')->name('cart.destroy'); 
 
