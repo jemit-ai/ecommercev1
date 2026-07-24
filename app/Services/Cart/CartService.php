@@ -40,6 +40,8 @@ class CartService{
     
   }*/
 
+  public $totalAmt=0; 
+
   public function getCart(CartData $cartData){
     
     try{
@@ -61,14 +63,35 @@ class CartService{
         
         if($cart){
 
+            
             $cartItem = CartItems::with('product')->where('cart_id', $cart->id)->get()->map(function ($item) {
-                            $item->subtotal = $item->quantity * $item->price;
-                            return $item;
-                        });
+                          
+                            // $item->subtotal = $item->quantity * $item->price;
 
+                            $item->subtotal = number_format($item->quantity * $item->price, 2, '.', '');
+                                            
+                                            //$totalAmt += $item->subtotal;
+
+                            return $item;
+
+                        });
+             
+                $this->totalAmt=$cartItem->sum(function($item){ 
+
+                    return $item->subtotal;
+
+                });  
+                        
+            \Log::info("Main Order CartItem:-.".json_encode($cartItem));
+            
             if($cartItem){
 
-                return $cartItem;
+                //return $cartItem;
+
+                return [
+                    'cartItems' => $cartItem,
+                    'totalAmt'  => number_format($this->totalAmt, 2, '.', ''),
+                ];
 
             }
         }
@@ -79,6 +102,7 @@ class CartService{
 
        Log::error('CartService', [
             'message' => $e->getMessage(),
+            'line'    => $e->getLine(),
             'trace' => $e->getTraceAsString(),
         ]);
       
@@ -417,10 +441,12 @@ class CartService{
                 if($totalCharge > 1000){
 
                     $shippingCharge=100;
+                    $shippingCharge=number_format($shippingCharge, 2, '.', '');
 
                 }else{
                     
                     $shippingCharge=0;
+                    $shippingCharge=number_format($shippingCharge, 2, '.', '');;
 
                 }
 

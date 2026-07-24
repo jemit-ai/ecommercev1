@@ -14,13 +14,13 @@
                 <button class="btn btn-dark">Apply</button>
             </div>
 
-            <div class="summary-row"><span>Subtotal</span><strong> ₹ {{ subTotal }}</strong></div>
-            <div class="summary-row"><span>Shipping</span><strong> ₹ {{ shippingCharge }}</strong></div>
+            <div class="summary-row"><span>Subtotal</span><strong> $ {{ subTotal }}</strong></div>
+            <div class="summary-row"><span>Shipping</span><strong> $ {{ shippingCharge }}</strong></div>
             <!--div class="summary-row"><span>Discount</span><strong class="text-success"> ₹ 200</strong></div>
             <div class="summary-row"><span>Tax</span><strong> ₹ 450</strong></div-->
 
             <hr />
-            <div class="summary-row fs-5"><strong>Total</strong><strong class="text-primary"> ₹ {{ totalAmount
+            <div class="summary-row fs-5"><strong>Total</strong><strong class="text-primary"> $ {{ totalAmount
             }}</strong></div>
             <button class="btn btn-primary w-100 btn-place-order mt-3">
                 <i class="bi bi-lock-fill"></i> Place Order

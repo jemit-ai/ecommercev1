@@ -45,12 +45,13 @@ const props = defineProps({
         default: () => []
     }
 
+
 });
 
 const subTotal = computed(() =>
 
     props.cartItems?.reduce((sum, item) =>
-        sum + Number(item.subtotal), 0)
+        sum + Number(item.subtotal), 0).toFixed(2) ?? "0.00"
 
 );
 
