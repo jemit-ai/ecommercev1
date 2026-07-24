@@ -17,6 +17,8 @@ class ProductImport extends Model
         'processed_rows',
         'failed_rows',
         'error_message',
+        'category_id',
+        'brand_id',
     ];
     
         

@@ -52,6 +52,26 @@ class CartController extends Controller
     
     public function destroy(Request $request){
 
+        \Log::info('Delete...'); 
+
+        $cartData = CartData::fromRequest($request);  
+        
+        \Log::info("Cart Data::->" . json_encode($cartData));  
+
+        try{
+         
+            $cart = $this->cartService->removeFromCart($cartData); 
+
+            \Log::info("Cart Remove:->" . json_encode($cart));
+
+            return back()->with('success', 'Product removed from cart.');
+
+        }Catch(CartException $e){
+
+            \Log::info("Cart Remove Error:->" . $e->getMessage());
+
+        }
+
     }
      
     public function update(Request $request){

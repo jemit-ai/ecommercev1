@@ -3,20 +3,25 @@ import Header from './Components/Header.vue';
 import Footer from './Components/Footer.vue';
 import ProductCard from './Components/ProductCard.vue';
 import PriceSlider from './Components/PriceSlider.vue';
+import Brand from './Components/Sidebar/Brand.vue';
+import Category from './Components/Sidebar/Category.vue';
 import { router } from '@inertiajs/vue3';
 import { reactive } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue'
 
 
-const categories = ['Electronics', 'Fashion', 'Shoes', 'Furniture', 'Sports'];
-const brands = ['Apple', 'Samsung', 'Sony', 'Nike', 'Adidas'];
-
 const props = defineProps({
     products: Array,
+    categories: Array,
+    brands: Array,
     minPrice: Number,
     maxPrice: Number,
 });
+
+const selectedCategories = ref([])
+
+const selectedBrand = ref([])
 
 const selectedPrice = ref(props.minPrice);
 
@@ -25,14 +30,20 @@ const form = useForm({
     category: '',
     brand: '',
     price: '',
+    minPrice: '',
+    maxPrice: '',
 });
 
 const applyFilters = () => {
 
-    console.log(form.price);
+    //console.log(form.price);
 
     // Update price field with selectedPrice
     form.price = selectedPrice.value;
+    form.category = selectedCategories.value.join(',');
+    form.brand = selectedBrand.value.join(',');
+    form.minPrice = props.minPrice;
+    form.maxPrice = props.maxPrice;
 
     //console.log("Form:-" + form.name);
 
@@ -83,25 +94,16 @@ const applyFilters = () => {
                                             placeholder="Search products" v-model="form.name">
                                     </div>
 
-                                    <div class="filter-group">
-                                        <h4>Categories</h4>
-                                        <ul class="category-list">
-                                            <li v-for="category in categories" :key="category">
-                                                <a href="#">{{ category }}</a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <Category :categories="props.categories" v-model="selectedCategories" />
 
                                     <PriceSlider :minPrice="props.minPrice" :maxPrice="props.maxPrice"
                                         v-model="selectedPrice" />
 
-                                    <div class="filter-group">
-                                        <h4>Brands</h4>
-                                        <div v-for="brand in brands" :key="brand" class="form-check">
-                                            <input class="form-check-input" type="checkbox">
-                                            <label class="form-check-label">{{ brand }}</label>
-                                        </div>
-                                    </div>
+                                    <Brand :brands="props.brands" v-model="selectedBrand" />
+
+                                    <p>Selected Categories: {{ selectedCategories }}</p>
+                                    <p>Selected Brand: {{ selectedBrand }}</p>
+                                    <p>Selected Price: {{ selectedPrice }}</p>
 
                                     <button class="btn btn-primary w-100 mt-3" @click="applyFilters">Apply
                                         Filters</button>

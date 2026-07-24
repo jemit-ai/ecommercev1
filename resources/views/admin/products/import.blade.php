@@ -121,6 +121,67 @@
                         @enderror
                     </div>
 
+                    <!-- Category Drop Down --->
+                    <div class="mb-6">
+                        <label for="category_id" class="block text-sm font-semibold text-slate-700 mb-2">
+                            Category <span class="text-red-500">*</span>
+                        </label>
+
+                        <div class="relative">
+                            <!-- Left Icon -->
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                <i class="fa-solid fa-layer-group text-slate-400"></i>
+                            </div>
+
+                            <!-- Category Dropdown -->
+                            <select
+                                id="category_id"
+                                name="category_id" 
+                                class="w-full rounded-2xl border border-slate-300 bg-slate-50/50 py-3 pl-11 pr-10 text-sm text-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all">
+
+                                <option value="">Select Category</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Validation Error -->
+                        <p class="mt-2 text-xs text-red-600 font-medium" style="display: none;">
+                            Please select a category.
+                        </p>
+                    </div>
+
+                    <!--Brand------>
+                    <div class="mb-6">
+
+                        <label for="brand_id" class="block text-sm font-semibold text-slate-700 mb-2">
+                            Brand <span class="text-red-500">*</span>
+                        </label>
+
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                <i class="fa-solid fa-tags text-slate-400"></i>
+                            </div>
+
+                            <select
+                                id="brand_id"
+                                name="brand_id"
+                                class="w-full rounded-2xl border border-slate-300 bg-slate-50/50 py-3 pl-11 pr-10 text-sm text-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all">
+
+                                <option value="">Select Brand</option>
+                                @foreach ($brands as $brand)
+                                    <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <p class="mt-2 text-xs text-red-600 font-medium hidden">
+                            Please select a brand.
+                        </p>
+
+                    </div>
+
                     <!-- Configuration Options -->
                     <div class="mb-6 border-t border-slate-100 pt-5">
                         <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Import Settings</h4>

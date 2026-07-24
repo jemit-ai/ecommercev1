@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg" id="nav">
         <div class="container">
 
-            <Link class="navbar-brand">
+            <Link class="navbar-brand" href="/">
                 <img src="./images/logo/logo.png" alt="ShopGrids" width="150" />
             </Link>
 

@@ -1,6 +1,26 @@
 <script setup>
 import Header from './Components/Header.vue';
 import Footer from './Components/Footer.vue';
+import OrderSummary from './Components/OrderSummary.vue';
+
+
+const props = defineProps({
+
+    cartItems: {
+        cartItems: Array,
+    },
+    shippingCharge: {
+        type: Number,
+        default: 0,
+    },
+    totalAmount: {
+        type: Number,
+        default: 0,
+    },
+
+});
+
+//console.log("Saying from check page:- " + JSON.stringify(props.cartItems));
 
 </script>
 
@@ -83,47 +103,11 @@ import Footer from './Components/Footer.vue';
                                 </div>
                             </div>
                         </div>
+
                         <!-- Right Side: Order Summary -->
-                        <div class="col-lg-4">
-                            <div class="card checkout-card p-4 shadow-sm">
-                                <h5 class="mb-4">Order Summary</h5>
-                                <div class="product-item d-flex align-items-center mb-3">
-                                    <img src="https://picsum.photos/100?1" />
-                                    <div class="ms-3 flex-grow-1">
-                                        <strong>Wireless Headphones</strong><br />
-                                        <small>Qty : 1</small>
-                                    </div>
-                                    <div class="price">₹1,999</div>
-                                </div>
-                                <div class="product-item d-flex align-items-center mb-3">
-                                    <img src="https://picsum.photos/100?2" />
-                                    <div class="ms-3 flex-grow-1">
-                                        <strong>Smart Watch</strong><br />
-                                        <small>Qty : 2</small>
-                                    </div>
-                                    <div class="price">₹6,998</div>
-                                </div>
-                                <hr />
-                                <div class="input-group mb-4">
-                                    <input class="form-control" placeholder="Coupon Code" />
-                                    <button class="btn btn-dark">Apply</button>
-                                </div>
-                                <div class="summary-row"><span>Subtotal</span><strong>₹8,997</strong></div>
-                                <div class="summary-row"><span>Shipping</span><strong>₹150</strong></div>
-                                <div class="summary-row"><span>Discount</span><strong
-                                        class="text-success">-₹200</strong></div>
-                                <div class="summary-row"><span>Tax</span><strong>₹450</strong></div>
-                                <hr />
-                                <div class="summary-row fs-5"><strong>Total</strong><strong
-                                        class="text-primary">₹9,397</strong></div>
-                                <button class="btn btn-primary w-100 btn-place-order mt-3">
-                                    <i class="bi bi-lock-fill"></i> Place Order
-                                </button>
-                                <div class="text-center mt-3 text-muted">
-                                    <small><i class="bi bi-shield-check"></i> Secure Checkout</small>
-                                </div>
-                            </div>
-                        </div>
+                        <OrderSummary :cartItems="cartItems" :shippingCharge="shippingCharge"
+                            :totalAmount="totalAmount" />
+
                     </div>
                 </div>
             </section>

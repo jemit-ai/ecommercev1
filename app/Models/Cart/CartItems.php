@@ -3,6 +3,7 @@
 namespace App\Models\Cart;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Product\Product;
 
 class CartItems extends Model
 {
@@ -31,4 +32,6 @@ class CartItems extends Model
     {
         return $this->belongsTo(ProductVariant::class);
     }
+
+    
 }

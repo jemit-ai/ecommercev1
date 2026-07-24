@@ -195,5 +195,7 @@ class DashboardDataSeeder extends Seeder
                 ]);
             }
         }
+
+        
     }
 }

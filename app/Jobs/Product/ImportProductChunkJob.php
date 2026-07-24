@@ -60,6 +60,18 @@ class ImportProductChunkJob implements ShouldQueue
                         //$images = explode("|", $row[7]);
                         $images = array_filter(array_map('trim', explode('|', $row[7])));
 
+                        //$categoryId = ProductImport::where('id', $this->importId)->value('category_id');
+
+                        //$brandId = ProductImport::where('id', $this->importId)->value('brand_id');
+
+                        $productImport = ProductImport::select('category_id', 'brand_id')->findOrFail($this->importId);
+
+                        $categoryId = $productImport->category_id;
+                        $brandId = $productImport->brand_id;
+                        
+                        \Log::info("CateID:-".$categoryId);   
+                        \Log::info("BrandID:-".$brandId);   
+
                         $product = Product::create([
                             'name' => $name,
                             'sku' => $sku,
@@ -68,9 +80,12 @@ class ImportProductChunkJob implements ShouldQueue
                             'price' => $price,
                             'discount_price' => $discount_price,
                             'stock' => $stock,
+                            'category_id'=>$categoryId,
+                            'brand_id'=>$brandId,
                         ]);
 
                         $productId = $product->id;
+
 
                         foreach($images as $img){
 

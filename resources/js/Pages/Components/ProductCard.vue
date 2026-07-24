@@ -30,7 +30,7 @@ const handleClick = (product) => {
     try {
 
         router.post('/cart/add', { product_id: product.id, quantity: 1 }, {
-
+            preserveScroll: false,
             onStart: () => {
                 console.log('Product clicked' + product);
             },

@@ -9,8 +9,8 @@ use App\Jobs\Product\ImportProductsJob;
 use App\Models\Product\ProductImport;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Brand;
 use Illuminate\Http\RedirectResponse;
-
 
 class ProductController extends Controller
 {
@@ -22,7 +22,13 @@ class ProductController extends Controller
 
     public function import()
     {
-        return view('admin.products.import');
+        //Get All Categories
+        $categories = Category::latest()->get();
+
+        //Get All Brands 
+        $brands = Brand::latest()->get();
+        
+        return view('admin.products.import' , compact('categories', 'brands'));
     }
 
     public function importStore(Request $request): RedirectResponse
@@ -35,10 +41,15 @@ class ProductController extends Controller
         $filename = time() . '.' . $file->getClientOriginalExtension();
         $path = $file->move(public_path('imports'), $filename);
 
+        $category_id = $request->category_id;
+        $brand_id    = $request->brand_id;
+        
         $import = ProductImport::create([
                 'filename'=>$filename,
                 'filepath'=>$path,
                 'status'=>'pending',
+                'category_id'=>$category_id,
+                'brand_id'=>$brand_id,
         ]);
 
         ImportProductsJob::dispatch($import);

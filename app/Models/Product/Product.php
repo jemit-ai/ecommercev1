@@ -20,6 +20,8 @@ class Product extends Model
         'price',
         'discount_price',
         'stock',
+        'category_id',
+        'brand_id',
     ]; 
 
     public function category(): BelongsTo

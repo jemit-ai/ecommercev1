@@ -48,17 +48,28 @@ class CartService{
         $sessionID = $cartData->sessionID;
 
         if ($userID) {
+
                 $cart = Cart::where('user_id', $userID)->first();
+
         } else {
+
                 $cart = Cart::where('session_id', $sessionID)->first();
+
         }
 
         //$cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
         
         if($cart){
-            $cartItem = CartItems::where('cart_id', $cart->id)->first();
+
+            $cartItem = CartItems::with('product')->where('cart_id', $cart->id)->get()->map(function ($item) {
+                            $item->subtotal = $item->quantity * $item->price;
+                            return $item;
+                        });
+
             if($cartItem){
+
                 return $cartItem;
+
             }
         }
 
@@ -248,14 +259,24 @@ class CartService{
 
                 $cart = $query->first();
 
+                //dd($query->toRawSql());
+
                 if (!$cart) {
                     return false;
                 }
 
+                \Log::info("Cart:-" . json_encode($cart));
+                \Log::info("ProId:-".$productID);
+
+                //dd($cart->id);
                 // Find the cart item
                 $cartItem = CartItems::where('cart_id', $cart->id)
                     ->where('product_id', $productID)
                     ->first();
+
+
+                \Log::info("CartItem:-" . json_encode($cartItem));
+                //dd($cartItem::query()->toRawSql());  
 
                 if (!$cartItem) {
                     return false;
@@ -362,4 +383,64 @@ class CartService{
     }
     
   }
+
+  public function getShippingCharge(CartData $cartData){
+    
+    try{
+        
+        $userID = $cartData->userID;
+        $sessionID = $cartData->sessionID;
+
+        if ($userID) {
+            $cart = Cart::where('user_id', $userID)->first();
+        } else {
+            $cart = Cart::where('session_id', $sessionID)->first();
+        }
+
+        //$cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
+        
+        if($cart){
+
+            //$cartItem = CartItems::where('cart_id', $cart->id)->get();
+
+            $cartItem = CartItems::with('product')->where('cart_id', $cart->id)->get()->map(function ($item) {
+                            $item->subtotal = $item->quantity * $item->price;
+                            return $item;
+                        });
+
+            if($cartItem){
+
+                $totalCharge = $cartItem->sum('subtotal'); 
+
+                if($totalCharge > 1000){
+
+                    $shippingCharge=100;
+
+                }else{
+                    
+                    $shippingCharge=0;
+
+                }
+
+                return $shippingCharge;
+
+            }
+
+        }
+
+        return 0;
+
+    }catch(Exception $e){
+
+        \Log::error('CartService', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+        
+        return 0;
+      
+    }
+
+  }
+
 }

@@ -34,12 +34,17 @@ class ProductController extends Controller
         $minPrice    = $this->productService->getMinPrice();
 
         $maxPrice    = $this->productService->getMaxPrice();
-        
-        
+
+        $categories  = $this->productService->getAllCategories();
+
+        $brands      = $this->productService->getAllBrands();
+
         return Inertia::render('Product', [
             'products' => $allProducts,
             'minPrice' => $minPrice,
             'maxPrice' => $maxPrice,
+            'categories' => $categories,
+            'brands' => $brands,
         ]);
     
 

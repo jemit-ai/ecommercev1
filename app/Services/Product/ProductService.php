@@ -1,6 +1,8 @@
 <?php
 namespace App\Services\Product;
 use App\Models\Product\Product;
+use App\Models\Brand;
+use App\Models\Category;
 use App\DTO\ProductFilterData;
 
 class ProductService
@@ -35,26 +37,41 @@ class ProductService
 
            if (!empty($ProductFilterData->search)) {
 
-             $query->where('name', 'like', '%' . $ProductFilterData->search . '%');
+             $query->orWhere('name', 'like', '%' . $ProductFilterData->search . '%');
 
            }
 
            if (!empty($ProductFilterData->category)) {
 
-            $query->where('category_id', $ProductFilterData->category);
+            \Log::info('Category:-' . $ProductFilterData->category);
+
+            $query->orWhere('category_id', $ProductFilterData->category);
             
            }
 
            if (!empty($ProductFilterData->brand)) {
 
-            $query->where('brand_id', $ProductFilterData->brand);
+            \Log::info('Brand:-' . $ProductFilterData->brand);
+
+            $query->orWhere('brand_id', $ProductFilterData->brand);
 
            }
 
-           if (!empty($ProductFilterData->price)) {
+           /*if (!empty($ProductFilterData->price)) {
  
             $query->where('price', $ProductFilterData->price);
             
+           }*/ 
+
+           if (!empty($ProductFilterData->minprice) && !empty($ProductFilterData->maxprice)) {
+
+            $query->whereBetween('price', [$ProductFilterData->minprice, $ProductFilterData->maxprice]);
+
+            \Log::info('Min Price:-' . $ProductFilterData->minprice);
+            \Log::info('Max Price:-' . $ProductFilterData->maxprice);
+
+            //\Log::info('Query:-' . $query->ddRawSql()); 
+
            }
            
            $Products = $query->take(100)->get();
@@ -80,6 +97,26 @@ class ProductService
 
         try{
             return Product::max('price');
+        }catch(\Exception $e){
+            return $e->getMessage();
+        }
+
+    }
+
+    public function getAllCategories(){
+
+        try{
+            return Category::all();
+        }catch(\Exception $e){
+            return $e->getMessage();
+        }
+
+    }
+
+    public function getAllBrands(){
+
+        try{
+            return Brand::all();
         }catch(\Exception $e){
             return $e->getMessage();
         }
