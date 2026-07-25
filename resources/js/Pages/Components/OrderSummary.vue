@@ -21,7 +21,7 @@
 
             <hr />
             <div class="summary-row fs-5"><strong>Total</strong><strong class="text-primary"> $ {{ totalAmount
-            }}</strong></div>
+                    }}</strong></div>
             <button class="btn btn-primary w-100 btn-place-order mt-3">
                 <i class="bi bi-lock-fill"></i> Place Order
             </button>

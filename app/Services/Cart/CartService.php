@@ -69,29 +69,18 @@ class CartService{
                             // $item->subtotal = $item->quantity * $item->price;
 
                             $item->subtotal = number_format($item->quantity * $item->price, 2, '.', '');
-                                            
-                                            //$totalAmt += $item->subtotal;
+                            
+                            //$totalAmt += $item->subtotal;
 
                             return $item;
 
                         });
-             
-                $this->totalAmt=$cartItem->sum(function($item){ 
 
-                    return $item->subtotal;
-
-                });  
-                        
-            \Log::info("Main Order CartItem:-.".json_encode($cartItem));
+            
             
             if($cartItem){
 
-                //return $cartItem;
-
-                return [
-                    'cartItems' => $cartItem,
-                    'totalAmt'  => number_format($this->totalAmt, 2, '.', ''),
-                ];
+                return $cartItem;
 
             }
         }
@@ -102,7 +91,6 @@ class CartService{
 
        Log::error('CartService', [
             'message' => $e->getMessage(),
-            'line'    => $e->getLine(),
             'trace' => $e->getTraceAsString(),
         ]);
       
@@ -470,5 +458,50 @@ class CartService{
     }
 
   }
+
+  public function getTotalAmt(CartData $cartData){
+    
+    try{ 
+        
+        $userID = $cartData->userID;
+        $sessionID = $cartData->sessionID;
+
+        if ($userID) {
+            $cart = Cart::where('user_id', $userID)->first();
+        } else {
+            $cart = Cart::where('session_id', $sessionID)->first();
+        }
+
+        //$cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
+        
+        if($cart){
+
+            $cartItem = CartItems::where('cart_id', $cart->id)->selectRaw('SUM(price * quantity) as total')->value('total');
+
+            if($cartItem){
+
+                //return $cartItem;
+
+                return number_format($cartItem, 2, '.', ''); 
+
+            }
+             
+        }
+
+        return 0;
+
+    }catch(Exception $e){
+
+        \Log::error('CartService', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+        
+        return 0;
+      
+    }
+    
+  }
+
 
 }

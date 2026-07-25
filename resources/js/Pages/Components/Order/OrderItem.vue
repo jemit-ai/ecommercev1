@@ -48,12 +48,24 @@ const props = defineProps({
 
 });
 
+/*
 const subTotal = computed(() =>
 
     props.cartItems?.reduce((sum, item) =>
         sum + Number(item.subtotal), 0).toFixed(2) ?? "0.00"
 
 );
+*/
+
+const subTotal = computed(() => {
+    if (!Array.isArray(props.cartItems)) {
+        return "0.00";
+    }
+
+    return props.cartItems
+        .reduce((sum, item) => sum + Number(item.subtotal), 0)
+        .toFixed(2);
+});
 
 watch(
     subTotal,

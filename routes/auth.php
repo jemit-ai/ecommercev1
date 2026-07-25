@@ -10,8 +10,12 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Log;
 
-Route::middleware('guest')->group(function () {
+Route::middleware('guest')->group(function () { 
+
+    Log::info('Auth routes loaded for guest users.');  
+
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 

@@ -26,27 +26,23 @@ class OrderController extends Controller
     {
 
         $CartData = CartData::fromRequest($request); 
-
         //\Log::info('Request Data:'.json_encode($CartData));  
-
-        $cartItemsList  = $this->cartService->getCart($CartData);  
-
-        \Log::info('Cart Items List:'.json_encode($cartItemsList));  
-
-        //$cartArray      = $cartItemsList->toArray(); 
-
-        $cartItems      = $cartItemsList['cartItems'];
-        $totalAmt       = $cartItemsList['totalAmt'];  
-
-        \Log::info('Cart Items:'.json_encode($cartItems));  
-        \Log::info('Cart Total Amount:'.json_encode($totalAmt));  
+        $cartItems     = $this->cartService->getCart($CartData);  
         
-
         $shippingCharge = $this->cartService->getShippingCharge($CartData);
+
+        $totalAmount = $this->cartService->getTotalAmt($CartData);
+
+        \Log::info('Total Amount:'.json_encode($totalAmount));  
+
 
         if($this->cartService->getCartCount($CartData) == 0){
             return redirect()->route('home');
         }
+        
+        $totalAmount = $cartItems->sum(function ($item) {
+            return $item->subtotal;
+        });
 
         //$totalAmount = 10;
             
@@ -58,7 +54,7 @@ class OrderController extends Controller
         return Inertia::render('Check',[ 
             'cartItems' => $cartItems,
             'shippingCharge' => $shippingCharge, 
-            'totalAmount' => $totalAmt, 
+            'totalAmount' => $totalAmount, 
         ]);
 
     }
