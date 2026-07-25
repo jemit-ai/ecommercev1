@@ -18,9 +18,14 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create_old(): View
     {
         return view('auth.register');
+    }
+
+    public function create(): \Inertia\Response
+    {
+        return inertia('Auth/Register');
     }
 
     /**
