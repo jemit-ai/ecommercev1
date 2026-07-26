@@ -10,9 +10,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use App\Services\Cart\CartService;
+use App\DTO\CartDTO;
 
 class AuthenticatedSessionController extends Controller
 {
+
     /**
      * Display the login view.
      */
@@ -21,10 +24,17 @@ class AuthenticatedSessionController extends Controller
         //Log::info("Hii from login controller");
         return view('auth.login');
     }
-    
+
+    public function __construct(private CartService $cartService) {
+
+    }
+
+
     public function create()
-    {
+    {   
+
         return Inertia::render('Auth/Login');
+        
     }
 
     /**
@@ -36,11 +46,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->authenticate();
 
+        $sessionIdExisting = $request->session()->getId();
+
         $request->session()->regenerate();
 
-        //return Inertia::render('dashboard');
+        $user = Auth::user();
 
-        //return Inertia::location(route('dashboard', absolute: false));
+        if ($user) {
+            $this->cartService->mergeSessionCart($sessionIdExisting, $user);
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
@@ -56,6 +70,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        //return redirect('/');
+
+        return redirect()->route('login');
+
+        //return Inertia::location(route('login')); 
+
     }
 }

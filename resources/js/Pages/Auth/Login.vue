@@ -1,15 +1,32 @@
 <script setup>
-import { ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import Header from '../Components/Header.vue';
 import Footer from '../Components/Footer.vue';
+import { useForm } from '@inertiajs/vue3';
 
-const email = ref('');
-const password = ref('');
-const remember = ref(false);
+const form = useForm({
+    email: '',
+    password: '',
+    remember: false,
+});
 
 const handleSubmit = () => {
-    console.log({ email: email.value, password: password.value, remember: remember.value });
+
+    //console.log({ email: email.value, password: password.value, remember: remember.value });
+
+    //usePage().props.auth.remember = remember.value;
+
+    /*router.post('/login', {
+        email: email.value,
+        password: password.value,
+        remember: remember.value,
+    });*/
+
+    form.post('/login', {
+        preserveState: true,
+        preserveScroll: true
+    });
+
 };
 </script>
 
@@ -34,7 +51,8 @@ const handleSubmit = () => {
                 <div class="auth-form-panel">
                     <div class="form-top">
                         <div class="brand-badge">ShopGrids</div>
-                        <p class="helper-text">New here? <Link href="/register">Create account</Link></p>
+                        <p class="helper-text">New here? <Link href="/register">Create account</Link>
+                        </p>
                     </div>
 
                     <h2>Login</h2>
@@ -43,23 +61,27 @@ const handleSubmit = () => {
                     <form class="auth-form" @submit.prevent="handleSubmit">
                         <label>
                             <span>Email address</span>
-                            <input v-model="email" type="email" placeholder="you@example.com" required />
+                            <input v-model="form.email" name="email" id="email" type="email" placeholder="you@example.com"
+                                required />
+                            <span v-if="form.errors.email" class="field-error">{{ form.errors.email }}</span>
                         </label>
 
                         <label>
                             <span>Password</span>
-                            <input v-model="password" type="password" placeholder="Enter your password" required />
+                            <input v-model="form.password" name="password" id="password" type="password"
+                                placeholder="Enter your password" required />
+                            <span v-if="form.errors.password" class="field-error">{{ form.errors.password }}</span>
                         </label>
 
                         <div class="form-row">
                             <label class="checkbox-row">
-                                <input v-model="remember" type="checkbox" />
+                                <input v-model="form.remember" type="checkbox" />
                                 <span>Remember me</span>
                             </label>
                             <Link href="/forgot-password" class="forgot-link">Forgot password?</Link>
                         </div>
 
-                        <button type="submit" class="submit-btn">Sign in</button>
+                        <button type="submit" class="submit-btn" :disabled="form.processing">{{ form.processing ? 'Signing in...' : 'Sign in' }}</button>
                     </form>
                 </div>
             </div>
@@ -235,6 +257,17 @@ const handleSubmit = () => {
     transform: translateY(-1px);
 }
 
+.submit-btn:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.field-error {
+    color: #dc2626;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
 @media (max-width: 900px) {
     .auth-card {
         grid-template-columns: 1fr;
@@ -242,6 +275,7 @@ const handleSubmit = () => {
 }
 
 @media (max-width: 640px) {
+
     .auth-illustration,
     .auth-form-panel {
         padding: 1.25rem;

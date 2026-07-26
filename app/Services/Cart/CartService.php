@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\DTO\CartData;
 use Exception;
-use Log;
+use Illuminate\Support\Facades\Log;
 use App\Exceptions\CartException;
 
 class CartService{ 
@@ -164,7 +164,7 @@ class CartService{
         return true;
 
     }catch(Exception $e){
-        \Log::info("CartService::addToCart: ".$e->getMessage());
+        Log::info("CartService::addToCart: ".$e->getMessage());
         return false;
     }
     
@@ -279,8 +279,8 @@ class CartService{
                     return false;
                 }
 
-                \Log::info("Cart:-" . json_encode($cart));
-                \Log::info("ProId:-".$productID);
+                Log::info("Cart:-" . json_encode($cart));
+                Log::info("ProId:-".$productID);
 
                 //dd($cart->id);
                 // Find the cart item
@@ -289,7 +289,7 @@ class CartService{
                     ->first();
 
 
-                \Log::info("CartItem:-" . json_encode($cartItem));
+                Log::info("CartItem:-" . json_encode($cartItem));
                 //dd($cartItem::query()->toRawSql());  
 
                 if (!$cartItem) {
@@ -350,7 +350,7 @@ class CartService{
 
     }catch(Exception $e){
 
-        \Log::error('CartService', [
+Log::error('CartService', [
             'message' => $e->getMessage(),
             'trace' => $e->getTraceAsString(),
         ]);
@@ -374,22 +374,30 @@ class CartService{
             $cart = Cart::where('session_id', $sessionID)->first();
         }
 
+
+        //\Log::info("CartService::getCartCount->" . json_encode($cart)); 
+
+        //\Log::info("CartService::getCartCount ID->" . json_encode($cart->id));
+
         //$cart = Cart::where('user_id', $userID)->orWhere('session_id', $sessionID)->first();
         
-        if($cart){
-            $cartItem = CartItems::where('cart_id', $cart->id)->first();
+        if($cart){ 
+
+            $cartItem = CartItems::where('cart_id', $cart->id)->get();
+
             if($cartItem){
+
                 return $cartItem->count();
+
             }
+
         }
 
         return 0;
 
     }catch(Exception $e){
 
-        \Log::error('CartService', [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
+        Log::error('CartService', [
         ]);
         
         return 0;
@@ -448,7 +456,7 @@ class CartService{
 
     }catch(Exception $e){
 
-        \Log::error('CartService', [
+        Log::error('CartService', [
             'message' => $e->getMessage(),
             'trace' => $e->getTraceAsString(),
         ]);
@@ -492,7 +500,7 @@ class CartService{
 
     }catch(Exception $e){
 
-        \Log::error('CartService', [
+        Log::error('CartService', [
             'message' => $e->getMessage(),
             'trace' => $e->getTraceAsString(),
         ]);
@@ -502,6 +510,82 @@ class CartService{
     }
     
   }
+
+  public function mergeSessionCart($sessionIdExisting, $user){
+
+        //$userID = $cartData->userID;
+        //$sessionID = $cartData->sessionID; 
+
+        //Log::info("@@@@CartDTO :-" . json_encode($user)); 
+
+        //Log::info("@@@@CartDTO SessionID :-" . json_encode($sessionIdExisting)); 
+
+
+        try{
+
+            DB::transaction(function () use ($sessionIdExisting, $user) {
+
+                // Guest cart
+                $sessionCart = Cart::where('session_id', $sessionIdExisting)  
+                    ->with('items')
+                    ->first(); 
+
+                if (!$sessionCart) {
+                    return;
+                }
+
+                if (!$user || !isset($user->id)) {
+                    return;
+                }
+
+                // User cart
+                $userCart = Cart::firstOrCreate(
+                    ['user_id' => $user->id],
+                    ['session_id' => null]
+                );
+
+                foreach ($sessionCart->items as $item) {
+
+                    // Check if same product already exists
+                    $existingItem = CartItems::where('cart_id', $userCart->id)
+                        ->where('product_id', $item->product_id)
+                        ->where('product_variant_id', $item->product_variant_id)
+                        ->first();
+
+                    if ($existingItem) {
+
+                        // Increase quantity
+                        $existingItem->quantity += $item->quantity;
+                        $existingItem->subtotal = $existingItem->quantity * $existingItem->price;
+                        $existingItem->save();
+
+                    } else {
+
+                        // Move item
+                        $item->cart_id = $userCart->id;
+                        $item->save();
+                    }
+                }
+
+                // Delete empty session cart
+                $sessionCart->delete();
+
+            });
+
+        }Catch(Exception $e){ 
+
+            Log::error('CartService Session Merge', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'line' => __LINE__,
+                'file' => __FILE__,
+            ]);
+            
+            return false;
+          
+        }
+
+   }
 
 
 }

@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Services\Cart\CartService;
 use App\DTO\CartData;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -17,7 +18,7 @@ class HandleInertiaRequests extends Middleware
      *
      * @var string
      */
-    protected $rootView = 'frontend.layouts.app';
+    //protected $rootView = 'frontend.layouts.app';
 
     /**
      * Determines the current asset version.
@@ -39,15 +40,27 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
 
-        $cartData = CartData::fromRequest($request);   
+        $cartData = CartData::fromRequest($request);    
         
+       // Log::info("Middleware Cart Data::->" . print_r($cartData, true));
+
         $cartCount = app(CartService::class)->getCartCount($cartData);  
 
-        \Log::info("CartCount::->" . $cartCount);  
+        //Log::info("CartCount::->" . $cartCount);  
 
         return [
             ...parent::share($request),
             'cartCount' => $cartCount, 
+            'auth' => [
+                    'user' => $request->user()
+                            ? [
+                                'id' => $request->user()->id,
+                                'name' => $request->user()->name,
+                                'roles' => $request->user()->getRoleNames(),
+                                'permissions' => $request->user()->getAllPermissions()->pluck('name'),
+                            ]
+                            : null,
+            ],
             //
         ];
     }

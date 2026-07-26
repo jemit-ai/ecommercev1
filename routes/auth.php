@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 
 Route::middleware('guest')->group(function () { 
 
-    Log::info('Auth routes loaded for guest users.');  
+    //Log::info('Auth routes loaded for guest users.');  
 
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');

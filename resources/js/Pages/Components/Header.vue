@@ -46,10 +46,15 @@
                     <details>
                         <summary class="user-trigger">
                             <img :src="profileImage" alt="User avatar" class="avatar-image" />
-                            <span class="user-name">{{ authUser ? authUser.name : 'Sign in' }}</span>
+                            <span class="user-name">
+                                <Link href="/login" class="dropdown-item">
+                                    {{ authUser ? authUser.name : 'Sign in' }}
+                                </Link>
+                            </span>
                             <ion-icon name="chevron-down-outline"></ion-icon>
                         </summary>
-                        <div class="dropdown-menu">
+                        <div class="dropdown-menu" v-if="authUser"
+                            style="min-width: 180px; display: flex; flex-direction: column; gap: 0.5rem; padding: 0.5rem;">
                             <template v-if="authUser">
                                 <Link href="/dashboard" class="dropdown-item">Dashboard</Link>
                                 <Link href="/profile" class="dropdown-item">Profile</Link>
@@ -70,12 +75,15 @@
 </template>
 
 <script setup>
+
 import { Link, usePage } from '@inertiajs/vue3';
+
 import { computed } from 'vue';
 
 const page = usePage();
 
 const authUser = computed(() => page.props.auth?.user || null);
+//console.log(authUser.value.name);
 const cartCount = computed(() => page.props.cartCount ?? 0);
 
 const cartImage = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path fill="%234f46e5" d="M20 20h-4l-2-8H8v4h2.6l4.8 20.2A6 6 0 0 0 21.3 36h22.7a6 6 0 0 0 5.8-4.4L52 24H20v-4Zm6 32a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm20 0a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg>';
@@ -84,6 +92,7 @@ const profileImage = computed(() => {
     const name = authUser.value?.name || 'Guest';
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4f46e5&color=fff&size=128`;
 });
+
 </script>
 
 <style scoped>

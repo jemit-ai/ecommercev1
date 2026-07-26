@@ -91,7 +91,7 @@
 
                     <!-- Wishlist -->
                     <li class="nav-item ms-2">
-                        <a href="{{ route('wishlist.index') }}"
+                        <a href=""
                            class="nav-link position-relative">
                             <i class="fa-regular fa-heart fa-lg"></i>
 
@@ -103,7 +103,7 @@
 
                     <!-- Cart -->
                     <li class="nav-item ms-2">
-                        <a href="{{ route('cart.index') }}"
+                        <a href=""
                            class="nav-link position-relative">
                             <i class="fa-solid fa-cart-shopping fa-lg"></i>
 
