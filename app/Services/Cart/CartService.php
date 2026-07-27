@@ -110,6 +110,8 @@ class CartService{
             $productID = $cartData->productID;
             $quantity  = $cartData->quantity; 
 
+            session()->put('guest_session_id', $sessionID);
+
             if ($userID) {
                 $cart = Cart::where('user_id', $userID)->first();
             } else {
@@ -350,7 +352,7 @@ class CartService{
 
     }catch(Exception $e){
 
-Log::error('CartService', [
+    Log::error('CartService', [
             'message' => $e->getMessage(),
             'trace' => $e->getTraceAsString(),
         ]);
@@ -510,82 +512,89 @@ Log::error('CartService', [
     }
     
   }
+  
+  public function mergeSessionCart(string $sessionId, $user): bool{
 
-  public function mergeSessionCart($sessionIdExisting, $user){
+        if (!$user || empty($user->id)) {
+            return false;
+        }
 
-        //$userID = $cartData->userID;
-        //$sessionID = $cartData->sessionID; 
+        try {
+            DB::transaction(function () use ($sessionId, $user) {
 
-        //Log::info("@@@@CartDTO :-" . json_encode($user)); 
+                Log::info("Merge Session Cart: " . json_encode($sessionId));
 
-        //Log::info("@@@@CartDTO SessionID :-" . json_encode($sessionIdExisting)); 
+                // Retrieve guest cart with its items
+                $guestCart = Cart::with('items')
+                    ->where('session_id', $sessionId)
+                    ->first();
 
+                Log::info("Guest Cart ID::->" . json_encode($guestCart)); 
 
-        try{
-
-            DB::transaction(function () use ($sessionIdExisting, $user) {
-
-                // Guest cart
-                $sessionCart = Cart::where('session_id', $sessionIdExisting)  
-                    ->with('items')
-                    ->first(); 
-
-                if (!$sessionCart) {
+                if (!$guestCart) {
                     return;
                 }
 
-                if (!$user || !isset($user->id)) {
-                    return;
-                }
-
-                // User cart
+                // Retrieve existing user cart or create a new one
                 $userCart = Cart::firstOrCreate(
                     ['user_id' => $user->id],
                     ['session_id' => null]
                 );
 
-                foreach ($sessionCart->items as $item) {
+                Log::info("User Cart ID::->" . json_encode($userCart));
 
-                    // Check if same product already exists
-                    $existingItem = CartItems::where('cart_id', $userCart->id)
-                        ->where('product_id', $item->product_id)
-                        ->where('product_variant_id', $item->product_variant_id)
+                // Nothing to merge
+                if ($guestCart->id === $userCart->id) {
+                    return;
+                }
+
+                foreach ($guestCart->items as $guestItem) {
+
+                    $userItem = CartItems::where('cart_id', $userCart->id)
+                        ->where('product_id', $guestItem->product_id)
+                        ->where('product_variant_id', $guestItem->product_variant_id)
                         ->first();
 
-                    if ($existingItem) {
+                    if ($userItem) {
 
-                        // Increase quantity
-                        $existingItem->quantity += $item->quantity;
-                        $existingItem->subtotal = $existingItem->quantity * $existingItem->price;
-                        $existingItem->save();
+                        // Merge quantities
+                        $userItem->quantity += $guestItem->quantity;
+                        $userItem->subtotal = $userItem->quantity * $userItem->price;
+                        $userItem->save();
+
+                        // Remove duplicate guest item
+                        $guestItem->delete();
 
                     } else {
 
-                        // Move item
-                        $item->cart_id = $userCart->id;
-                        $item->save();
+                        // Move guest item to user's cart
+                        $guestItem->update([
+                            'cart_id' => $userCart->id,
+                        ]);
                     }
                 }
 
-                // Delete empty session cart
-                $sessionCart->delete();
-
+                // Remove guest cart after all items are merged
+                $guestCart->delete();
             });
 
-        }Catch(Exception $e){ 
+            return true;
 
-            Log::error('CartService Session Merge', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'line' => __LINE__,
-                'file' => __FILE__,
+        } catch (\Throwable $e) {
+
+            Log::error('Failed to merge guest cart into user cart.', [
+                'user_id'    => $user->id,
+                'session_id' => $sessionId,
+                'message'    => $e->getMessage(),
+                'file'       => $e->getFile(),
+                'line'       => $e->getLine(),
+                'trace'      => $e->getTraceAsString(),
             ]);
-            
+
             return false;
-          
         }
 
-   }
+  }
 
 
 }

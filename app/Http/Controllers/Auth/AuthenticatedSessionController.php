@@ -42,18 +42,32 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        //Log::info("Hii from login controller"); 
+        Log::info("Hii from login controller"); 
 
         $request->authenticate();
 
-        $sessionIdExisting = $request->session()->getId();
-
+        //$oldSessionId = $request->session()->getId();
+ 
         $request->session()->regenerate();
 
-        $user = Auth::user();
+        $user         = Auth::user();
 
-        if ($user) {
-            $this->cartService->mergeSessionCart($sessionIdExisting, $user);
+        if ($user){
+
+            //$sessionId = session()->getId();
+
+           // Log::info("Old Session::" . $sessionId); 
+
+            $guestSessionId = session()->get('guest_session_id');
+
+            Log::info("User Logged In::" . json_encode($user));  
+
+            Log::info("Guest Session ID::" . $guestSessionId);
+
+            //$sessionIdExisting = $request->session()->getId();
+
+            $this->cartService->mergeSessionCart($guestSessionId, $user);
+
         }
 
         return redirect()->intended(route('dashboard', absolute: false));

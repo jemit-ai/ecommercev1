@@ -30,7 +30,8 @@ class CartData{
     {
         return new self( 
             userID: auth()->id() ? auth()->id() : null,
-            sessionID: $request->session()->getId(),
+            //sessionID: $request->session()->getId(),
+            sessionID: session()->getId(),
             productID: (int) $request->product_id,
             quantity: (int) $request->quantity,
             type: (string) $request->type, 
