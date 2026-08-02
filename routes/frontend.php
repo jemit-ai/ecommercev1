@@ -42,6 +42,8 @@ Route::controller(OrderController::class)->group(function () {
 
 });
 
+Route::post('/checkout/place-order', [CheckoutController::class, 'store'])->name('checkout.store');
+
 Route::middleware(['web'])->prefix('cart')->controller(CartController::class)->group(function () {
 
     Route::get('/', 'index')->name('cart.index');

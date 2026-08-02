@@ -11,10 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::table('product_imports', function (Blueprint $table) {
             //
-            $table->dropColumn(['brand', 'category']);
+            //$table->dropColumn(['brand', 'category']);
+            
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

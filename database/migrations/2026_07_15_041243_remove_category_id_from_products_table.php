@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::table('products', function (Blueprint $table) {
             
              // Drop foreign key first if it exists
@@ -20,6 +21,8 @@ return new class extends Migration
             $table->dropColumn('category_id');
 
         });
+        Schema::enableForeignKeyConstraints();
+
     }
 
     /**

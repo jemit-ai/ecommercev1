@@ -33,7 +33,7 @@ class OrderService
 
                 //$coupon_code    = $data['coupon_code']; 
                 $payment_method = $data['payment_method'];
-                $grand_total    = $data['grand_total'];
+                $grand_total    = $data['grand_total']; 
 
                 \Log::info("Order grand Total...".$grand_total);   
                

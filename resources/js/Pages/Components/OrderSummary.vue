@@ -5,6 +5,7 @@
 
             <h5 class="mb-4">Order Summary</h5>
 
+
             <OrderItem :cartItems="props.cartItems" :shippingCharge="props.shippingCharge"
                 @update:subTotal="subTotal = $event" />
 
@@ -17,7 +18,7 @@
             <div class="summary-row"><span>Subtotal</span><strong> $ {{ subTotal }}</strong></div>
             <div class="summary-row"><span>Shipping</span><strong> $ {{ shippingCharge }}</strong></div>
             <!--div class="summary-row"><span>Discount</span><strong class="text-success"> ₹ 200</strong></div>
-            <div class="summary-row"><span>Tax</span><strong> ₹ 450</strong></div-->
+                <div class="summary-row"><span>Tax</span><strong> ₹ 450</strong></div-->
 
             <hr />
             <div class="summary-row fs-5"><strong>Total</strong><strong class="text-primary"> $ {{ totalAmount
@@ -29,6 +30,7 @@
             <div class="text-center mt-3 text-muted">
                 <small><i class="bi bi-shield-check"></i> Secure Checkout</small>
             </div>
+
 
         </div>
     </div>

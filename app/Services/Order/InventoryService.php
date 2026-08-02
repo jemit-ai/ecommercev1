@@ -3,14 +3,18 @@ namespace App\Services\Order;
 
 use App\Models\Order\Order;
 use App\Models\Order\OrderDetail;
-use App\Models\Product;
+use App\Models\Product\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Exception;
 
 class InventoryService{
 
     public function deductStock(Order $order):void{
+
         try{
+     
+            Log::info("Inventory Service!"); 
            
             DB::transaction(function () use ($order) {
 
@@ -24,6 +28,8 @@ class InventoryService{
 
                     $product->decrement('stock', $item->quantity);
                 }
+
+
             });
 
         }catch(Exception $e){
@@ -57,16 +63,22 @@ class InventoryService{
 
     }
 
-    public function checkStock(array $items):bool{
-        
+    public function checkStock(array $items):bool
+    {
         foreach ($items as $item) {
+            $productId = $item['product_id'] ?? null;
+            $quantity = $item['quantity'] ?? 0;
 
-            $product = Product::find($item['product_id']);
-
-            if ($product->stock < $item['quantity']) {
+            if ($productId === null) {
                 return false;
             }
-        }
+
+            $product = Product::find((int) $productId); 
+
+            if (! $product || $product->stock < (int) $quantity) {
+                return false;
+            }
+        } 
 
         return true;
     }

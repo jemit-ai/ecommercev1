@@ -29,7 +29,7 @@ class GenerateOrderNo implements ShouldQueue
         //
         try{
 
-            \Log::info("#### Order number generation started ####");
+            \Log::info("### Listner GenerateOrder No");   
             $this->orderService->generateOrderNo($event->order);
 
         }catch(Exception $e){

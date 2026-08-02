@@ -3,7 +3,7 @@ namespace App\Services\Order;
 
 use App\Models\Order\Order;
 use App\Models\Order\OrderDetail;
-use App\Models\Product;
+use App\Models\Product\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;

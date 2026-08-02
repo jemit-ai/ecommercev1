@@ -11,12 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+        
         Schema::table('product_imports', function (Blueprint $table) {
             // 
             $table->foreignId('category_id')->after('filename')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('brand_id')->after('category_id')->nullable()->constrained()->nullOnDelete(); 
 
         });
+
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

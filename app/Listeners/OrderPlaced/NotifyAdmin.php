@@ -28,9 +28,9 @@ class NotifyAdmin implements ShouldQueue
         //
         try{
 
-            \Log::info('#Notification handler.....');
+            \Log::info('### Listner Notification Admin.....');
  
-            \Log::warning('#user ID Placed $admin = User::find(1);'."File:--->".__FILE__."Line:--->".__LINE__);
+            //\Log::warning('#user ID Placed $admin = User::find(1);'."File:--->".__FILE__."Line:--->".__LINE__);
             $admin = User::find(1);
 
             if ($admin) {

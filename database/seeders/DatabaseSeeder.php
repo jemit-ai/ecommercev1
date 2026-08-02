@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
                 RolePermissionSeeder::class,
                 AdminUserSeeder::class,
                 DashboardDataSeeder::class,
+                //CategorySeeder::class,
+                BrandSeeder::class,
+                
         ]);
         
     }

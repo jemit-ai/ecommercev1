@@ -13,11 +13,16 @@ return new class extends Migration
     {
         // Disable foreign key checks and drop columns safely
         Schema::disableForeignKeyConstraints();
+
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn(['category_id', 'brand_id']);
+
+           /* $table->dropForeign(['category_id']);
+            $table->dropForeign(['brand_id']);
+
+            $table->dropColumn(['category_id', 'brand_id']);*/
         });
         Schema::enableForeignKeyConstraints();
-    }
+    } 
 
     /**
      * Reverse the migrations.

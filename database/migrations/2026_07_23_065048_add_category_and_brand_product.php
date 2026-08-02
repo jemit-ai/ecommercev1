@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::table('products', function (Blueprint $table) {
             //
 
@@ -19,6 +20,9 @@ return new class extends Migration
 
 
         });
+
+        Schema::enableForeignKeyConstraints();
+
     }
 
     /**

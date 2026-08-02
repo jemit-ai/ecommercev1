@@ -2,12 +2,13 @@
 import Header from './Components/Header.vue';
 import Footer from './Components/Footer.vue';
 import OrderSummary from './Components/OrderSummary.vue';
-
+import { useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const props = defineProps({
-
     cartItems: {
-        cartItems: Array,
+        type: Array,
+        default: () => [],
     },
     shippingCharge: {
         type: Number,
@@ -17,10 +18,63 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
-
 });
 
-//console.log("Saying from check page:- " + JSON.stringify(props.cartItems));
+const form = useForm({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    address: '',
+    country: '',
+    state: '',
+    zip: '',
+    notes: '',
+    payment_method: '',
+    cartItems: props.cartItems,
+    shippingCharge: props.shippingCharge,
+    totalAmount: props.totalAmount,
+});
+
+const loading = ref(false);
+
+const placeOrder = () => {
+
+    form.cartItems = props.cartItems;
+    form.shippingCharge = props.shippingCharge;
+    form.totalAmount = props.totalAmount;
+
+    console.log("OrderForm:-" + JSON.stringify(form));
+
+    //console.log("CartItems:-" + JSON.stringify(form.cartItems));
+    //console.log("ShippingCharge:-" + form.shippingCharge);
+    //console.log("TotalValue:-" + form.totalAmount);
+
+    form.post('/checkout/place-order', {
+        preserveScroll: true,
+        preserveState: true,
+
+        onStart: () => {
+            loading.value = true;
+        },
+
+        onFinish: () => {
+            loading.value = false;
+        },
+
+        onSuccess: () => {
+            loading.value = false;
+            console.log('Order placed successfully');
+        },
+
+        onError: (errors) => {
+            loading.value = false;
+            console.log(errors);
+        },
+    });
+
+
+};
 
 </script>
 
@@ -39,78 +93,108 @@ const props = defineProps({
             </section>
 
             <!-- Main Checkout Content -->
+
             <section class="checkout-content py-5">
                 <div class="container">
-                    <div class="row g-4">
-                        <!-- Left Side: Billing Form -->
-                        <div class="col-lg-8">
-                            <div class="card checkout-card p-4 shadow-sm">
-                                <h5 class="mb-4">Billing Information</h5>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label>First Name</label>
-                                        <input type="text" class="form-control" />
+
+                    <form @submit.prevent="placeOrder">
+
+                        <div class="row g-4">
+
+                            <!-- Left Side: Billing Form -->
+                            <div class="col-lg-8">
+                                <div class="card checkout-card p-4 shadow-sm">
+                                    <h5 class="mb-4">Billing Information</h5>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label>First Name</label>
+                                            <input type="text" name="first_name" id="first_name"
+                                                v-model="form.first_name" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>Last Name</label>
+                                            <input type="text" name="last_name" id="last_name" v-model="form.last_name"
+                                                class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>Email Address</label>
+                                            <input type="email" name="email" id="email" v-model="form.email"
+                                                class="form-control" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>Phone Number</label>
+                                            <input type="text" name="phone" id="phone" v-model="form.phone"
+                                                class="form-control" />
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <label>Street Address</label>
+                                            <input type="text" name="address" id="address" v-model="form.address"
+                                                class="form-control" />
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label>Country</label>
+                                            <select class="form-select" name="country" id="country"
+                                                v-model="form.country">
+                                                <option>India</option>
+                                                <option>USA</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label>State</label>
+                                            <input type="text" v-model="form.state" class="form-control" name="state"
+                                                id="state" />
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label>Zip Code</label>
+                                            <input type="text" v-model="form.zip" class="form-control" name="zip"
+                                                id="zip" />
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <label>Order Notes</label>
+                                            <textarea v-model="form.notes" class="form-control" name="notes"
+                                                id="notes"></textarea>
+                                        </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label>Last Name</label>
-                                        <input type="text" class="form-control" />
+                                    <hr />
+                                    <h5 class="mb-3">Payment Method</h5>
+                                    <div class="payment-box">
+                                        <input type="radio" name="payment_method" id="cod" v-model="form.payment_method"
+                                            value="cod" /> Cash On Delivery
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label>Email Address</label>
-                                        <input type="email" class="form-control" />
+                                    <div class="payment-box">
+                                        <input type="radio" name="payment_method" id="card"
+                                            v-model="form.payment_method" value="card" /> Credit / Debit Card
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label>Phone Number</label>
-                                        <input type="text" class="form-control" />
+                                    <div class="payment-box">
+                                        <input type="radio" name="payment_method" id="upi" v-model="form.payment_method"
+                                            value="upi" /> UPI
                                     </div>
-                                    <div class="col-12 mb-3">
-                                        <label>Street Address</label>
-                                        <input type="text" class="form-control" />
+                                    <div class="payment-box">
+                                        <input type="radio" name="payment_method" id="netbnk"
+                                            v-model="form.payment_method" value="netbanking" /> Net Banking
                                     </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label>Country</label>
-                                        <select class="form-select">
-                                            <option>India</option>
-                                            <option>USA</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label>State</label>
-                                        <input type="text" class="form-control" />
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label>Zip Code</label>
-                                        <input type="text" class="form-control" />
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label>Order Notes</label>
-                                        <textarea class="form-control"></textarea>
-                                    </div>
-                                </div>
-                                <hr />
-                                <h5 class="mb-3">Payment Method</h5>
-                                <div class="payment-box">
-                                    <input type="radio" checked /> Cash On Delivery
-                                </div>
-                                <div class="payment-box">
-                                    <input type="radio" /> Credit / Debit Card
-                                </div>
-                                <div class="payment-box">
-                                    <input type="radio" /> UPI
-                                </div>
-                                <div class="payment-box">
-                                    <input type="radio" /> Net Banking
+
+                                    <button type="submit" class="btn btn-primary mt-4" :disabled="form.processing">
+                                        {{ form.processing ? 'Placing Order...' : 'Place Order' }}
+                                    </button>
                                 </div>
                             </div>
+
+                            <!-- Right Side: Order Summary -->
+                            <OrderSummary :cartItems="cartItems" :shippingCharge="shippingCharge"
+                                :totalAmount="totalAmount" />
+
+                            <input type="hidden" name="shippingCharge" :value="shippingCharge">
+                            <input type="hidden" name="totalAmount" :value="totalAmount">
+
                         </div>
 
-                        <!-- Right Side: Order Summary -->
-                        <OrderSummary :cartItems="cartItems" :shippingCharge="shippingCharge"
-                            :totalAmount="totalAmount" />
+                    </form>
 
-                    </div>
                 </div>
             </section>
+
+
         </main>
         <Footer />
     </div>

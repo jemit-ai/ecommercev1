@@ -27,9 +27,15 @@ class ReserveInventory implements ShouldQueue
     {
         // 
         try{
-         
-          \Log::info("##### Inventory Update Started #####"); 
-          $this->inventoryService->deductStock($event->order);
+          
+          \Log::info("### Listner Inventory Service.");   
+          \Log::info("#### Order: " . $event->order);
+          \Log::info("#### Order Details: " . $event->order->details);
+          \Log::info("#### Order ID: " . $event->order->id);
+          \Log::info("#### Order Number: " . $event->order->order_number);
+          
+          
+          //$this->inventoryService->deductStock($event->order);
 
         }catch(Exception $e){
 

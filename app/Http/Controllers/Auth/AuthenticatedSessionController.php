@@ -56,17 +56,20 @@ class AuthenticatedSessionController extends Controller
 
             //$sessionId = session()->getId();
 
-           // Log::info("Old Session::" . $sessionId); 
+            // Log::info("Old Session::" . $sessionId); 
 
             $guestSessionId = session()->get('guest_session_id');
 
             Log::info("User Logged In::" . json_encode($user));  
 
-            Log::info("Guest Session ID::" . $guestSessionId);
+            Log::info("Guest Session ID::" . $guestSessionId); 
 
             //$sessionIdExisting = $request->session()->getId();
+            if($guestSessionId){
 
-            $this->cartService->mergeSessionCart($guestSessionId, $user);
+             $this->cartService->mergeSessionCart($guestSessionId, $user);
+
+            }
 
         }
 
