@@ -14,6 +14,7 @@ class PaypalPayment implements PaymentGatewayInterface
     private $client_secret;
     private $mode;
     private $base_url;
+    private $currency;
 
     public function __construct()
     {
@@ -23,14 +24,16 @@ class PaypalPayment implements PaymentGatewayInterface
 
         $this->client_secret = config('services.paypal.client_secret');
 
+        $this->currency = config('services.paypal.currency');
+
         $this->base_url = $this->mode == 'sandbox'
             ? 'https://api-m.sandbox.paypal.com'
             : 'https://api-m.paypal.com';
     }
 
-    public function initiate(PaymentData $payment): array
+    public function initiate(PaymentData $payment) 
     {
-        Log::info('PayPal Initiate', (array) $payment);
+        //Log::info('PayPal Initiate', (array) $payment);
 
         $token = $this->createOAuthAccessToken();
 
@@ -53,13 +56,20 @@ class PaypalPayment implements PaymentGatewayInterface
             }
         }
 
-        return [
+
+        \Log::info("PayPal approvalUrl:--- ".json_encode($approvalUrl)); 
+
+        if($approvalUrl){
+             return redirect()->away($approvalUrl);
+        } 
+
+        /*return [
             'status'       => 'success',
             'gateway'      => 'paypal',
             'order_id'     => $order['id'],
             'approval_url' => $approvalUrl,
             'response'     => $order,
-        ];
+        ];*/
     }
 
     private function createOAuthAccessToken(): array
@@ -113,6 +123,8 @@ class PaypalPayment implements PaymentGatewayInterface
     private function createOrder(PaymentData $payment, string $accessToken): array
     {
         try {
+
+            \Log::info("PayPal Currency:--- ".json_encode($payment->currency));  
 
             $response = Http::withToken($accessToken)
                 ->acceptJson()

@@ -20,13 +20,8 @@ class PaymentService
         \Log::info("Order Gateway:--- ".json_encode($gateway));  
         //exit();     
         // \Log::info("Gateway:--- ".print_r($gateway)); 
-        \Log::info("Payment ID:--- ".$order->id);
-        \Log::info("Payment Amount:--- ".$order->grand_total);
-        \Log::info("Payment Currency:--- ".$order->currency);
-        \Log::info("Payment Method:--- ".$order->payment_method);
-        \Log::info("Payment User ID:--- ".$order->user_id); 
         
-        return $gateway->initiate(
+        /*return $gateway->initiate(
             new PaymentData(
                 orderId:$order->id,
                 amount:$order->grand_total,
@@ -34,7 +29,21 @@ class PaymentService
                 paymentMethod:$order->payment_method,
                 userId:$order->user_id
             )
+        );*/
+
+        $res=$gateway->initiate(
+            new PaymentData(
+                orderId:$order->id,
+                amount:$order->grand_total,
+                currency:'USD',
+                paymentMethod:$order->payment_method,
+                userId:$order->user_id
+            )
         );
+
+        \Log::info("Payment Response:--- ".json_encode($res)); 
+
+        return $res;
         
     }
 }

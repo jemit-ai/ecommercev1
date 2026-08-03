@@ -38,19 +38,6 @@ class CheckoutController extends Controller
             'totalAmount' => 'required|numeric',
         ]); 
 
-        //        // Use CheckoutData DTO to encapsulate validated data
-        /*$checkoutDTO = CheckoutData::fromArray($validated);
-        \Log::info('Checkout payload received', [
-            'first_name' => $checkoutDTO->firstName,
-            'last_name' => $checkoutDTO->lastName,
-            'email' => $checkoutDTO->email,
-            'phone' => $checkoutDTO->phone,
-            // add other fields as needed
-        ]);  */
- 
-        //\Log::info('Checkout payload received', $checkoutDTO);
-
-        //Log::info('Checkout Data: ', $validated); 
 
         /*$validated = [
                 'products' => [
@@ -73,11 +60,6 @@ class CheckoutController extends Controller
 
             return $item['price'] * $item['quantity']; 
         }); 
-
-        //\Log::info('Subtotal: ' . $subtotal);  
-
-        // return false;  
-        
 
         $data = [
 
