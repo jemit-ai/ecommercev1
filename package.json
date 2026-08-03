@@ -22,6 +22,7 @@
     },
     "dependencies": {
         "@inertiajs/vue3": "^3.6.1",
+        "@paypal/paypal-js": "^10.1.0",
         "@popperjs/core": "^2.11.8",
         "@vitejs/plugin-vue": "^6.0.8",
         "bootstrap": "^5.3.3",

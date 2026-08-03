@@ -51,6 +51,7 @@ const placeOrder = () => {
     //console.log("TotalValue:-" + form.totalAmount);
 
     form.post('/checkout/place-order', {
+
         preserveScroll: true,
         preserveState: true,
 
@@ -71,6 +72,7 @@ const placeOrder = () => {
             loading.value = false;
             console.log(errors);
         },
+
     });
 
 
@@ -161,7 +163,8 @@ const placeOrder = () => {
                                         <input type="radio" name="payment_method" id="cod" v-model="form.payment_method"
                                             value="cod" /> Cash On Delivery
                                     </div>
-                                    <div class="payment-box">
+
+                                    <!--div class="payment-box">
                                         <input type="radio" name="payment_method" id="card"
                                             v-model="form.payment_method" value="card" /> Credit / Debit Card
                                     </div>
@@ -172,7 +175,13 @@ const placeOrder = () => {
                                     <div class="payment-box">
                                         <input type="radio" name="payment_method" id="netbnk"
                                             v-model="form.payment_method" value="netbanking" /> Net Banking
+                                    </div-->
+
+                                    <div class="payment-box">
+                                        <input type="radio" name="payment_method" id="paypal"
+                                            v-model="form.payment_method" value="paypal" /> Paypal
                                     </div>
+
 
                                     <button type="submit" class="btn btn-primary mt-4" :disabled="form.processing">
                                         {{ form.processing ? 'Placing Order...' : 'Place Order' }}

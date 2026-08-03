@@ -12,6 +12,7 @@
         "laravel/reverb": "^1.10",
         "laravel/sanctum": "^4.3",
         "laravel/tinker": "^2.10.1",
+        "paypal/paypal-server-sdk": "^2.3",
         "razorpay/razorpay": "^2.9",
         "spatie/laravel-permission": "^6.25",
         "tightenco/ziggy": "^2.6"

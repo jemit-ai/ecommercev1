@@ -16,7 +16,9 @@ class CheckoutController extends Controller
     public OrderService $orderService;
 
     public function __construct(OrderService $orderService) {
+
         $this->orderService = $orderService; 
+        
     }
 
     public function store(Request $request)

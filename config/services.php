@@ -39,5 +39,11 @@ return [
         'key' => env('RAZORPAY_KEY'),
         'secret' => env('RAZORPAY_SECRET'),
     ],
-
+    
+    'paypal' => [
+        'mode' => env('PAYPAL_MODE'),
+        'client_id' => env('PAYPAL_CLIENT_ID'),
+        'client_secret' => env('PAYPAL_CLIENT_SECRET'),
+    ], 
+    
 ];
