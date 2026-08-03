@@ -71,7 +71,7 @@ class OrderService
 
                 $order->setAttribute('payment', $payment);
 
-                \Log::info("Payment created..." . print_r($payment, true));
+                \Log::info("Payment created ..." . print_r($payment, true)."Line".__LINE__);
 
                 //exit(); 
 
