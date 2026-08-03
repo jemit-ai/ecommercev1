@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Event;
 use App\Events\Order\OrderPlaced;
 use App\Events\Order\OrderPaid;
 use App\Events\Order\OrderCancelled;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+
+         if (app()->environment('local')) {
+            URL::forceScheme('https');
+        }
+
         Event::listen(OrderPlaced::class, \App\Listeners\OrderPlaced\ReserveInventory::class);
         Event::listen(OrderPlaced::class, \App\Listeners\OrderPlaced\GenerateOrderNo::class);
         Event::listen(OrderPlaced::class, \App\Listeners\OrderPlaced\CreateTimeline::class);
