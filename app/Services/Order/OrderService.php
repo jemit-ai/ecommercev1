@@ -67,11 +67,17 @@ class OrderService
                 
                 \Log::info("Order created...".print_r($order,true));
                 
-                $payment = $this->paymentService->initiate($order); 
+                $payment = $this->paymentService->initiate($order);
 
-                $order->setAttribute('payment', $payment);
+        // If the payment gateway returns a Laravel redirect response, forward it directly
+        if ($payment instanceof \Illuminate\Http\RedirectResponse) {
+            return $payment;
+        }
+ 
 
-                \Log::info("Payment created ..." . print_r($payment, true)."Line".__LINE__);
+                //$order->setAttribute('payment', $payment);
+
+                //\Log::info("Payment created for order #{$order->id}, payment ID {$payment->id}");
 
                 //exit(); 
 
