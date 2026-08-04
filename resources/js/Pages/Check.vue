@@ -4,8 +4,11 @@ import Footer from './Components/Footer.vue';
 import OrderSummary from './Components/OrderSummary.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { watch } from 'vue'
+
 
 const props = defineProps({
+
     cartItems: {
         type: Array,
         default: () => [],
@@ -18,6 +21,11 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    approval_url: {
+        type: String,
+        default: '',
+    },
+
 });
 
 const form = useForm({
@@ -65,6 +73,7 @@ const placeOrder = () => {
 
         onSuccess: () => {
             loading.value = false;
+
             console.log('Order placed successfully');
         },
 
@@ -77,6 +86,14 @@ const placeOrder = () => {
 
 
 };
+
+
+watch(() => props.approval_url, (newVal, oldVal) => {
+    console.log('approval_url has changed:', newVal)
+})
+
+
+
 
 </script>
 

@@ -3,6 +3,7 @@ namespace App\Services\Payment;
 
 use App\Models\Order\Order;
 use App\DTO\PaymentData;
+use Illuminate\Http\RedirectResponse;
 
 class PaymentService 
 {
@@ -17,7 +18,8 @@ class PaymentService
         
         $gateway = $this->manager->driver($order->payment_method);
         
-        \Log::info("Order Gateway:--- ".json_encode($gateway));  
+        \Log::info("Order Gateway:--- ".json_encode($gateway));   
+
         //exit();     
         // \Log::info("Gateway:--- ".print_r($gateway)); 
         
@@ -31,7 +33,7 @@ class PaymentService
             )
         );*/
 
-        $res=$gateway->initiate(
+        $payment_response=$gateway->initiate(
             new PaymentData(
                 orderId:$order->id,
                 amount:$order->grand_total,
@@ -41,9 +43,10 @@ class PaymentService
             )
         );
 
-        \Log::info("Payment Response:--- ".json_encode($res)); 
+        \Log::info("Payment Response:--- ".json_encode($payment_response)); 
 
-        return $res;
+        return $payment_response;
         
     }
+    
 }

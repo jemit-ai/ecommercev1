@@ -21,7 +21,8 @@ class OrderService
 
     public function __construct(public InventoryService $inventoryService,public PaymentService $paymentService){}
     
-    public function create(array $data):Order{
+    public function create(array $data)
+    {
 
         \Log::info("Order created...");
         
@@ -29,7 +30,7 @@ class OrderService
              
             //\Log::info($data);
 
-            $order = DB::transaction(function () use ($data) {
+            $transactionResult = DB::transaction(function () use ($data) {
 
                 //$coupon_code    = $data['coupon_code']; 
                 $payment_method = $data['payment_method'];
@@ -65,47 +66,40 @@ class OrderService
 
                 }
                 
-                \Log::info("Order created...".print_r($order,true));
+                //\Log::info("Order created...".print_r($order,true));
                 
                 $payment = $this->paymentService->initiate($order);
 
-        // If the payment gateway returns a Laravel redirect response, forward it directly
-        if ($payment instanceof \Illuminate\Http\RedirectResponse) {
-            return $payment;
-        }
+                //\Log::info("#Payment Information To Controller :- ".json_encode($payment)); 
+
+
+                /*if ($payment instanceof \Illuminate\Http\RedirectResponse) {
+                    return [
+                        'order' => $order,
+                        'redirect' => $payment,
+                    ];
+                }*/
  
-
-                //$order->setAttribute('payment', $payment);
-
-                //\Log::info("Payment created for order #{$order->id}, payment ID {$payment->id}");
-
-                //exit(); 
-
-                
-                // $this->inventoryService->deductStock($order);
-
-                // save payment
-
-                // clear cart
-
-                return $order;
-
-                /*return [
-                    'order'=>$order,
-                    'payment'=>$payment
-                ];*/
+                return [
+                    'order' => $order,
+                    'payment' => $payment,
+                ];
 
             });
 
-            // After Transaction 
-            // Event(new OrderPlaced($order));
-            // dd($order);
+            if (isset($transactionResult['order'])) {
+                DB::afterCommit(function () use ($transactionResult) {
+                    OrderPlaced::dispatch($transactionResult['order']); 
+                });
+            }
 
-            DB::afterCommit(function () use ($order) {
-                OrderPlaced::dispatch($order); 
-            }); 
-            
-            return $order;
+            /*if (isset($transactionResult['redirect'])) {
+                return $transactionResult['redirect'];
+            }*/
+
+            $order = $transactionResult['order'];
+            $order->payment = $transactionResult['payment'];
+            return $order; 
             
             
         }catch(Exception $e){

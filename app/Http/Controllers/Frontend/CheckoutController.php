@@ -9,7 +9,8 @@ use App\DTO\CartData;
 use App\DTO\CheckoutData;
 use App\Services\Order\OrderService;
 use Exception;
-
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
 class CheckoutController extends Controller
 {
 
@@ -23,6 +24,7 @@ class CheckoutController extends Controller
 
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -38,30 +40,13 @@ class CheckoutController extends Controller
             'totalAmount' => 'required|numeric',
         ]); 
 
-
-        /*$validated = [
-                'products' => [
-                    [
-                        'product_id' => 1,
-                        'quantity'   => 2,
-                    ],
-                    [
-                        'product_id' => 2,
-                        'quantity'   => 1,
-                    ],
-                 ],
-                'coupon_code'    => 'SAVE10',
-                'payment_method' => 'cod',
-        ];*/ 
-
-        \Log::info('Cart Items: ' . json_encode($validated['cartItems']));  
-
         $subtotal = collect($validated['cartItems'])->sum(function ($item) {
 
             return $item['price'] * $item['quantity']; 
+
         }); 
 
-        $data = [
+        $data = [ 
 
                 'items' => collect($validated['cartItems'])->map(fn ($item) => [
                         'product_id' => $item['product_id'],
@@ -74,20 +59,66 @@ class CheckoutController extends Controller
 
         ];
 
-        \Log::info('Data for Order Creation: ' . json_encode($data)); 
+        //\Log::info('Data for Order Creation: ' . json_encode($data)); 
 
         //return false;    
        
-        try{
+        
+        try {
 
             $order = $this->orderService->create($data);
 
-        }catch(Exception $e){
+            //\Log::info("Order Response in Controller :--- ".json_encode($order));   
+
+            //$paypalStatus = $order->payment['response']['status'];
+
+            if($order){   
+
+
+                   // Your application status
+                   $paymentStatus = $order->payment['status'];
+
+                   // PayPal status
+                   $paypalStatus = $order->payment['response']['status'];
+
+                   // Your application status
+                   $gateway = $order->payment['gateway'];
+
+                   // Payment Link
+                   $approval_url = $order->payment['approval_url'];
+
+
+                   \Log::info('App Status: ' . $paymentStatus);
+                   \Log::info('PayPal Status: ' . $paypalStatus);
+                   \Log::info('Gateway: ' . $gateway);
+
+
+                    if($gateway === 'paypal'){ 
+                        
+                        return Inertia::render('Process', [
+                           //'order' => $order, 
+                           'approval_url' => $approval_url,
+                        ]);
+
+                        //Inertia::location($approval_url);
+    
+                    }
+
+        
+            }
+
+            //\Log::info("Order Response in Controller :--- ".json_encode($order));  
+
+            
+        } catch (Exception $e) {
 
             \Log::info("Order Error: " . $e->getMessage()."Line: ".$e->getLine()."File: ".$e->getFile()); 
 
+            return redirect()->route('home')->with('error', 'Unable to place order.');
+
         }
 
-        return redirect()->route('home')->with('success', 'Order placed successfully.');
+        
+
     }
 }

@@ -33,49 +33,55 @@ class PaypalPayment implements PaymentGatewayInterface
 
     public function initiate(PaymentData $payment) 
     {
-        //Log::info('PayPal Initiate', (array) $payment);
 
-        $token = $this->createOAuthAccessToken();
+        try{
 
-        if ($token['status'] != 'success') {
-            return $token;
-        }
+            $token = $this->createOAuthAccessToken();
 
-        $order = $this->createOrder($payment, $token['access_token']);
-
-        \Log::info("PayPal Create Order:--- ".json_encode($order));   
-
-        if (isset($order['status']) && $order['status'] == 'error') {
-            return $order;
-        }
-
-        $approvalUrl = null;
-
-        foreach ($order['links'] as $link) {
-            if ($link['rel'] == 'approve') {
-                $approvalUrl = $link['href'];
-                break;
+            if ($token['status'] != 'success') {
+                return $token;
             }
+
+            $order = $this->createOrder($payment, $token['access_token']);
+
+            \Log::info("PayPal Create Order:--- ".json_encode($order));   
+
+            if (isset($order['status']) && $order['status'] == 'error') {
+                return $order;
+            }
+
+            $approvalUrl = null;
+
+            foreach ($order['links'] as $link) {
+                if ($link['rel'] == 'approve') {
+                    $approvalUrl = $link['href'];
+                    break;
+                }
+            }
+
+
+            \Log::info("PayPal approvalUrl:--- ".json_encode($approvalUrl)); 
+
+            return [
+                'status'       => 'success',
+                'gateway'      => 'paypal',
+                'order_id'     => $order['id'],
+                'approval_url' => $approvalUrl,
+                'response'     => $order,
+            ];
+
+        }catch(Exception $e){
+
+            \Log::error("Paypal Initiate:--".$e->getMessage());  
+
+            return [
+                'status' => 'error',
+                'gateway' => 'paypal',
+                'message' => $e->getMessage(),
+            ];
         }
 
 
-        \Log::info("PayPal approvalUrl:--- ".json_encode($approvalUrl)); 
-
-        return redirect()->to($approvalUrl);
-
-        /*if($approvalUrl){
-             return redirect()->away($approvalUrl);
-        } */
-
-        //return redirect($approve['href']);
-
-        /*return [
-            'status'       => 'success',
-            'gateway'      => 'paypal',
-            'order_id'     => $order['id'],
-            'approval_url' => $approvalUrl,
-            'response'     => $order,
-        ];*/
     }
 
     private function createOAuthAccessToken(): array
