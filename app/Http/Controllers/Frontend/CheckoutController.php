@@ -74,7 +74,6 @@ class CheckoutController extends Controller
 
             if($order){   
 
-
                    // Your application status
                    $paymentStatus = $order->payment['status'];
 
@@ -88,21 +87,12 @@ class CheckoutController extends Controller
                    $approval_url = $order->payment['approval_url'];
 
 
-                   \Log::info('App Status: ' . $paymentStatus);
-                   \Log::info('PayPal Status: ' . $paypalStatus);
-                   \Log::info('Gateway: ' . $gateway);
-
-
-                    if($gateway === 'paypal'){ 
-                        
-                        return Inertia::render('Process', [
+                        return Inertia::render('Process', [ 
                            //'order' => $order, 
+                           'gateway' => $gateway,
                            'approval_url' => $approval_url,
                         ]);
 
-                        //Inertia::location($approval_url);
-    
-                    }
 
         
             }

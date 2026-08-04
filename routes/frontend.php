@@ -45,9 +45,9 @@ Route::controller(OrderController::class)->group(function () {
 
 Route::post('/checkout/place-order', [CheckoutController::class, 'store'])->name('checkout.store');
 
-Route::get('/success', [PaymentController::class, 'paypalSuccess'])->name('paypal.success');
+Route::get('/success', [PaymentController::class, 'Success'])->name('paypal.success');
 
-Route::get('/cancel', [PaymentController::class, 'paypalCancel'])->name('paypal.cancel'); 
+Route::get('/cancel', [PaymentController::class, 'Cancel'])->name('paypal.cancel'); 
 
 Route::middleware(['web'])->prefix('cart')->controller(CartController::class)->group(function () {
 

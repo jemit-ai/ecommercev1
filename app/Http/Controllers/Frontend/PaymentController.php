@@ -4,18 +4,18 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use Inertia\Inertia; 
 
 
 class PaymentController extends Controller
 {
     //
-    public function paypalSuccess(Request $request)
+    public function Success(Request $request)
     {
         return Inertia::render('Success'); 
     }
     
-    public function paypalCancel(Request $request)
+    public function Cancel(Request $request)
     {
         return Inertia::render('Cancel');
     }

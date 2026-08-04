@@ -1,6 +1,6 @@
 <script setup>
-import Header from '../Components/Header.vue';
-import Footer from '../Components/Footer.vue';
+import Header from './Components/Header.vue';
+import Footer from './Components/Footer.vue';
 import { usePage } from '@inertiajs/vue3';
 
 const { props } = usePage();
@@ -27,6 +27,7 @@ const { props } = usePage();
   display: flex;
   flex-direction: column;
 }
+
 main {
   flex: 1;
 }
