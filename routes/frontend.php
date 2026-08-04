@@ -7,6 +7,7 @@ use App\Http\Controllers\Frontend\CheckoutController;
 use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\ProfileController;
 use App\Http\Controllers\Frontend\ProductController;
+use App\Http\Controllers\Frontend\PaymentController;
 use Inertia\Inertia;
 use App\Http\Middleware\HandleInertiaRequests;
 
@@ -46,7 +47,7 @@ Route::post('/checkout/place-order', [CheckoutController::class, 'store'])->name
 
 Route::get('/success', [PaymentController::class, 'paypalSuccess'])->name('paypal.success');
 
-Route::get('/cancel', [PaymentController::class, 'paypalCancel'])->name('paypal.cancel');
+Route::get('/cancel', [PaymentController::class, 'paypalCancel'])->name('paypal.cancel'); 
 
 Route::middleware(['web'])->prefix('cart')->controller(CartController::class)->group(function () {
 
