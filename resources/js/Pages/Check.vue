@@ -13,18 +13,27 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+
     shippingCharge: {
         type: Number,
         default: 0,
     },
+
     totalAmount: {
         type: Number,
         default: 0,
     },
-    approval_url: {
+
+    checkoutToken: {
         type: String,
         default: '',
     },
+
+    /*approval_url: {
+        type: String,
+        default: '',
+    },*/
+
 
 });
 
@@ -42,6 +51,7 @@ const form = useForm({
     cartItems: props.cartItems,
     shippingCharge: props.shippingCharge,
     totalAmount: props.totalAmount,
+    checkoutToken: props.checkoutToken,
 });
 
 const loading = ref(false);

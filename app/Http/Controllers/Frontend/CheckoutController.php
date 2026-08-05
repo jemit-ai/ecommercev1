@@ -25,6 +25,18 @@ class CheckoutController extends Controller
     public function store(Request $request)
     {
 
+        $token = $request->checkout_token;
+
+        /*if ($token !== session('checkout_token')) {
+
+            return response()->json([
+                'message' => 'Duplicate request'
+            ], 409);
+
+            return redirect()->route('order.index')->with('error', 'Unable to place order.');
+
+        } */
+
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -68,7 +80,7 @@ class CheckoutController extends Controller
 
             $order = $this->orderService->create($data);
 
-            //\Log::info("Order Response in Controller :--- ".json_encode($order));   
+            \Log::info("Order Response in Controller :--- ".json_encode($order));   
 
             //$paypalStatus = $order->payment['response']['status'];
 

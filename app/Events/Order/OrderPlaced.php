@@ -10,6 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Order\Order;
+use App\Models\Payment\Payment;
 
 class OrderPlaced
 {
@@ -18,8 +19,9 @@ class OrderPlaced
     /**
      * Create a new event instance.
      */
-    public function __construct(public Order $order)
+    public function __construct(public Order $order, public array $payment)
     {
+    
         //
     }
 

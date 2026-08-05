@@ -6,7 +6,7 @@ use Illuminate\Queue\InteractsWithQueue;
 
 use App\Events\Order\OrderPlaced;
 use App\Services\Order\InventoryService;
-use Exception;
+use Illuminate\Support\Facades\Log;
 
 class ReserveInventory implements ShouldQueue
 {
@@ -27,19 +27,27 @@ class ReserveInventory implements ShouldQueue
     {
         // 
         try{
-          
+           
+          //\Log::info("Event: " . json_encode($event));
+ 
           \Log::info("### Listner Inventory Service.");   
-          \Log::info("#### Order: " . $event->order);
-          \Log::info("#### Order Details: " . $event->order->details);
-          \Log::info("#### Order ID: " . $event->order->id);
-          \Log::info("#### Order Number: " . $event->order->order_number);
-          
+          //\Log::info("#### Order: " . $event->order);
+          //\Log::info("#### Order Details: " . $event->order->details);
+          //\Log::info("#### Order ID: " . $event->order->id);
+          //\Log::info("#### Order Event: " . $event->payment);  
+
+          Log::info('Event: ' . json_encode([
+              'order' => $event->order,
+              'payment' => $event->payment,
+          ]));
+          //\Log::info("#### Order payment id: " . $event->payment_id);
+          //\Log::info("#### Payment Order ID: " . $event->payment->order_id);           
           
           //$this->inventoryService->deductStock($event->order);
 
         }catch(Exception $e){
 
-          \Log::info("Inventory update failed for order {$event->order->id}  {$e->getMessage()}");
+          \Log::info("Inventory update failed for order ".$e->getMessage()." at line ".$e->getLine());
 
         } 
 

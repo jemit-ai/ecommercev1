@@ -52,7 +52,7 @@ class OrderService
 
                     $product = Product::findOrFail($item['product_id']);
 
-                    OrderDetail::create([
+                    $orderLine = OrderDetail::create([
                         'order_id'   => $order->id,
                         'product_id' => $product->id,
                         'price'      => $product->price,
@@ -70,16 +70,6 @@ class OrderService
                 
                 $payment = $this->paymentService->initiate($order);
 
-                //\Log::info("#Payment Information To Controller :- ".json_encode($payment)); 
-
-
-                /*if ($payment instanceof \Illuminate\Http\RedirectResponse) {
-                    return [
-                        'order' => $order,
-                        'redirect' => $payment,
-                    ];
-                }*/
- 
                 return [
                     'order' => $order,
                     'payment' => $payment,
@@ -87,18 +77,22 @@ class OrderService
 
             });
 
-            if (isset($transactionResult['order'])) {
-                DB::afterCommit(function () use ($transactionResult) {
-                    OrderPlaced::dispatch($transactionResult['order']); 
-                });
-            }
-
-            /*if (isset($transactionResult['redirect'])) {
-                return $transactionResult['redirect'];
-            }*/
-
             $order = $transactionResult['order'];
             $order->payment = $transactionResult['payment'];
+
+            if (isset($transactionResult['order'])) { 
+
+                DB::afterCommit(function () use ($transactionResult) { 
+
+                    //OrderPlaced::dispatch($transactionResult['order']); 
+                    //OrderPlaced::dispatch($order); 
+
+                    OrderPlaced::dispatch($transactionResult['order'],$transactionResult['payment']);   
+
+                });
+
+            }
+
             return $order; 
             
             
@@ -177,14 +171,18 @@ class OrderService
 
     public function generateOrderNo(Order $order){
 
-        \Log::info("Order number generation started");
+        //\Log::info("Order number generation started");
 
+        //\Log::info("Order number generation started" . $order->id); 
+        
         // $order = Order::find($order->id);
         // $order->update([
         //     'order_number' => Str::random(10),
         // ]); 
 
-        try{
+        try{ 
+
+           \Log::info("Order number generation started :- " . json_encode($order->id));   
 
             $order = Order::find($order->id);
             $order->update([
